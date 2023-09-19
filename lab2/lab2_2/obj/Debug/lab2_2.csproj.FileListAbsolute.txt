@@ -1,0 +1,10 @@
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\bin\Debug\lab2_2.exe.config
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\bin\Debug\lab2_2.exe
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\bin\Debug\lab2_2.pdb
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.csproj.AssemblyReference.cache
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.Form1.resources
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.Properties.Resources.resources
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.csproj.GenerateResource.cache
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.csproj.CoreCompileInputs.cache
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.exe
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_2\obj\Debug\lab2_2.pdb
