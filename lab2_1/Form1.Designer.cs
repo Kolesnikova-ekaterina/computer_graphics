@@ -42,7 +42,6 @@ namespace lab22
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -132,21 +131,11 @@ namespace lab22
             this.chart2.TabIndex = 6;
             this.chart2.Text = "chart2";
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(494, 617);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(308, 96);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Задание 2";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 755);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.chart2);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.pictureBox4);
@@ -175,7 +164,6 @@ namespace lab22
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.Button button2;
     }
 }
 
