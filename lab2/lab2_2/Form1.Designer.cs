@@ -92,23 +92,23 @@ namespace lab2_2
             // panel1
             // 
             this.panel1.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.panel1.Location = new System.Drawing.Point(333, 346);
+            this.panel1.Location = new System.Drawing.Point(307, 346);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(237, 222);
+            this.panel1.Size = new System.Drawing.Size(288, 222);
             this.panel1.TabIndex = 8;
             // 
             // panel2
             // 
-            this.panel2.Location = new System.Drawing.Point(645, 346);
+            this.panel2.Location = new System.Drawing.Point(623, 346);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(237, 222);
+            this.panel2.Size = new System.Drawing.Size(288, 222);
             this.panel2.TabIndex = 9;
             // 
             // panel3
             // 
-            this.panel3.Location = new System.Drawing.Point(965, 346);
+            this.panel3.Location = new System.Drawing.Point(944, 346);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(237, 222);
+            this.panel3.Size = new System.Drawing.Size(288, 222);
             this.panel3.TabIndex = 10;
             // 
             // Form1
