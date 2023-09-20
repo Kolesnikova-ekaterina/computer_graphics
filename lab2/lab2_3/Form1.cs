@@ -147,9 +147,8 @@ namespace lab2_3
 
             for (int i = 0; i < hsv_im.Length; i++)
             {
-                hsv_im[cnt][0] = hsv_im_ideal[cnt][0] + h; //Math.Min(359, Math.Max(0, hsv_im[cnt][0] + h - trackBarH ));
+                hsv_im[cnt][0] = hsv_im_ideal[cnt][0] + h ; 
                 cnt++;
-
             }
 
             Bitmap newImg = new Bitmap(image.Width, image.Height);
@@ -174,7 +173,7 @@ namespace lab2_3
 
             for (int i = 0; i < hsv_im.Length; i++)
             {
-                hsv_im[cnt][1] = Math.Min(1, Math.Max(0, s / 100.0)) ;
+                hsv_im[cnt][1] = Math.Min(1, Math.Max(0, hsv_im_ideal[cnt][1] + s / 100.0));//Math.Min(1, Math.Max(0, s / 100.0)) ;
                 cnt++;
 
             }
@@ -201,7 +200,7 @@ namespace lab2_3
 
             for (int i = 0; i < hsv_im.Length; i++)
             {
-                hsv_im[cnt][2] = Math.Min(1, Math.Max(0, v / 100.0));
+                hsv_im[cnt][2] = Math.Min(1, Math.Max(0, hsv_im_ideal[cnt][2] + (v ) / 100.0));
                 cnt++;
 
             }
@@ -253,6 +252,9 @@ namespace lab2_3
 
                 Task3();
                 button2.Enabled = true;
+                trackBar1.Value = 0;
+                trackBar2.Value = 0;
+                trackBar3.Value = 0;
             }
         }
 

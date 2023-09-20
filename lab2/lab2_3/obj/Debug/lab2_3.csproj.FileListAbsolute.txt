@@ -1,0 +1,9 @@
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\bin\Debug\lab2_3.exe.config
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\bin\Debug\lab2_3.exe
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\bin\Debug\lab2_3.pdb
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.Form1.resources
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.Properties.Resources.resources
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.csproj.GenerateResource.cache
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.csproj.CoreCompileInputs.cache
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.exe
+C:\Users\souln\Desktop\универ\computer_graphics\lab2\lab2_3\obj\Debug\lab2_3.pdb
