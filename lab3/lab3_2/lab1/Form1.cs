@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
-
+using System.Threading;
 using System.Windows.Forms;
 
 namespace lab1
@@ -84,7 +84,8 @@ namespace lab1
 
             for (int i = 1; i < dx; i++)
             {
-                g.FillRectangle(Brushes.BlueViolet, x, y, 1, 1);
+                //Thread.Sleep(500);
+                g.FillRectangle(Brushes.BlueViolet, x, y, 2, 2);
                 //g.FillRectangle(Brushes.BlueViolet, x, y, 1, 1);
                 if (start == finish)
                     break;
@@ -107,7 +108,7 @@ namespace lab1
 
         }
 
-        private void Swap (ref int x, ref int y)
+        private void Swap(ref int x, ref int y)
         {
             int step = y;
             y = x;
@@ -116,7 +117,7 @@ namespace lab1
 
         private void DrawPoint(bool steep, int x, int y, float a)
         {
-            Pen pen = new Pen(Color.FromArgb((int)(a*255), 255, 0, 0), 1);
+            Pen pen = new Pen(Color.FromArgb((int)(a * 255), 255, 0, 0), 1);
             if (steep)
             {
                 g.DrawRectangle(pen, new Rectangle(y, x, 1, 1));
@@ -129,29 +130,60 @@ namespace lab1
         private void WuAlgorithm(int x0, int y0, int x1, int y1)
         {
             g = this.CreateGraphics();
+            float dx = Math.Abs(finish.X - start.X);
+            float dy = Math.Abs(finish.Y - start.Y);
+            int signX = Sign((int)(finish.X - start.X));
+            int signY = Sign((int)(finish.Y - start.Y));
+            float x = (int)start.X;
+            float y = (int)start.Y;
+            if (dy > dx)
+            {
+                float cur = dx;
+                dx = dy;
+                dy = cur;
+                change_f = true;
+            }
+            else
+                change_f = false;
             var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
-            if (steep)
+            /*if (steep)
             {
-                Swap( ref x0, ref y0);
+                Swap(ref x0, ref y0);
                 Swap(ref x1, ref y1);
-            }
-            if (x0 > x1)
-            {
-                Swap(ref x0, ref x1);
-                Swap(ref y0, ref y1);
-            }
+            }*/
+            /* if (x0 > x1)
+             {
+                 Swap(ref x0, ref x1);
+                 Swap(ref y0, ref y1);
+             }*/
 
             DrawPoint(steep, x0, y0, 1); // Эта функция автоматом меняет координаты местами в зависимости от переменной steep
             DrawPoint(steep, x1, y1, 1); // Последний аргумент — интенсивность в долях единицы
-            float dx = x1 - x0;
-            float dy = y1 - y0;
-            float gradient = dy / dx;
-            float y = y0 + gradient;
-            for (var x = x0 + 1; x <= x1 - 1; x++)
+            if (!change_f)
             {
-                DrawPoint(steep, x, (int)y, 1 - (y - (int)y));
-                DrawPoint(steep, x, (int)y + 1, y - (int)y);
-                y += gradient;
+                float gradient = signY * dy / dx;
+                y = y0 + gradient;
+                // for ( x = x0 + 1; x <= x1 - 1; x++)
+                for (int i = 0; i < dx; i++)
+                {
+
+                    DrawPoint(steep, (int)x + i * signX, (int)y, 1 - (y - (int)y));
+                    DrawPoint(steep, (int)x + i * signX, (int)y + 1, y - (int)y);
+                    y += gradient;
+                }
+            }
+            else
+            {
+                float gradient = signX * dx / dy;
+                x = x0 + gradient;
+                // for ( x = x0 + 1; x <= x1 - 1; x++)
+                for (int i = 0; i < dy; i++)
+                {
+
+                    DrawPoint(steep, (int)x, (int)y + i * signY, 1 - (x - (int)x));
+                    DrawPoint(steep, (int)x + 1, (int)y + i * signY, x - (int)x);
+                    x += gradient;
+                }
             }
         }
 
