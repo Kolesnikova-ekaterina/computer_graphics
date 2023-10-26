@@ -42,7 +42,6 @@ namespace lab6_a
             "куб ",
             "тетраэдр",
             "октаэдрт",
-            "гексаэдр",
             "икосаэдр",
             "додекаэдр"});
             this.comboBoxTypePolyhedra.Location = new System.Drawing.Point(937, 19);

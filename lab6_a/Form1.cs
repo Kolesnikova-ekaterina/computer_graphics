@@ -115,19 +115,14 @@ namespace lab6_a
                     }
                 case 3:
                     {
-                        Hexahedron();
+                        Icosahedron();
                         break;
                     }
                 case 4:
                     {
-                        Icosahedron();
-                        break;
-                    }
-                case 5:
-                    {
                         Dodecahedron();
                         break;
-                    }            
+                    }       
             }
 
 
@@ -184,7 +179,7 @@ namespace lab6_a
 
         }
 
-        void Tetrahedron()
+        void Octahedron()
         {
             Cube();
 
@@ -226,27 +221,71 @@ namespace lab6_a
             list_points = new_points;
 
             List<Line> cur_lines = new List<Line>()
-               {new Line(0,  2), new Line(0, 4), new Line(0, 3), new Line(0, 5), // 0 1 2
-                new Line(1,  2), new Line(1, 4), new Line(1, 3), new Line(1, 5),  // 0 1 2
-                new Line(4,  2), new Line(2, 5), new Line(5, 3), new Line(3, 4),  // 0 1 2
+               {new Line(0,  2), new Line(0, 4), new Line(0, 3), new Line(0, 5), // 0 1 2 3
+                new Line(1,  2), new Line(1, 4), new Line(1, 3), new Line(1, 5),  //  4 5 6 7
+                new Line(4,  2), new Line(2, 5), new Line(5, 3), new Line(3, 4),  //  8 9 10 11
                };
 
             list_lines = cur_lines;
+
+            list_pols.Clear();
+
+
+            Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[8] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[11], cur_lines[2], cur_lines[1] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[10], cur_lines[3], cur_lines[2] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[9], cur_lines[0], cur_lines[3] });
+            list_pols.Add(cur_pol); //низ
+
+            cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[8] });
+            list_pols.Add(cur_pol); //вверх
+            cur_pol = new Polygon(new List<Line>() { cur_lines[5], cur_lines[6], cur_lines[11] });
+            list_pols.Add(cur_pol); //вверх
+            cur_pol = new Polygon(new List<Line>() { cur_lines[6], cur_lines[7], cur_lines[10] });
+            list_pols.Add(cur_pol); //вверх
+            cur_pol = new Polygon(new List<Line>() { cur_lines[7], cur_lines[4], cur_lines[9] });
+            list_pols.Add(cur_pol); //вверх
 
 
         }
 
 
-        void Octahedron()
-        { }
+        void Tetrahedron()
+        {
+            Cube();
+            var templist = new List<PointD> { list_points[4], list_points[1], list_points[2], list_points[7], };
+            list_points.Clear();
+            list_points = templist;
+
+            var cur_lines = new List<Line>() {new Line(0,  1), new Line(0, 2), new Line(0, 3),  // 0, 1, 2 
+                                          new Line(1,  2), new Line(2, 3), new Line(3, 1) }; // 3, 4, 5
+            list_lines = cur_lines;
+
+            list_pols.Clear();
 
 
-        void Hexahedron()
-        { }
+            Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[5], cur_lines[2] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[2], cur_lines[4], cur_lines[1] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[3] });
+            list_pols.Add(cur_pol); //низ
+            cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[3] });
+            list_pols.Add(cur_pol); //низ
+
+
+
+        }
 
 
         void Icosahedron()
-        { }
+        {
+
+        
+        }
 
 
         void Dodecahedron()
