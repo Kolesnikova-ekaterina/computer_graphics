@@ -70,6 +70,8 @@ namespace lab6_a
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBox14 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -101,7 +103,7 @@ namespace lab6_a
             // buttonTranslite
             // 
             this.buttonTranslite.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonTranslite.Location = new System.Drawing.Point(837, 141);
+            this.buttonTranslite.Location = new System.Drawing.Point(837, 126);
             this.buttonTranslite.Name = "buttonTranslite";
             this.buttonTranslite.Size = new System.Drawing.Size(138, 67);
             this.buttonTranslite.TabIndex = 2;
@@ -112,7 +114,7 @@ namespace lab6_a
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(990, 169);
+            this.textBox1.Location = new System.Drawing.Point(990, 154);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(75, 30);
             this.textBox1.TabIndex = 3;
@@ -121,7 +123,7 @@ namespace lab6_a
             // textBox2
             // 
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox2.Location = new System.Drawing.Point(1071, 169);
+            this.textBox2.Location = new System.Drawing.Point(1071, 154);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(75, 30);
             this.textBox2.TabIndex = 4;
@@ -130,7 +132,7 @@ namespace lab6_a
             // textBox3
             // 
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox3.Location = new System.Drawing.Point(1152, 169);
+            this.textBox3.Location = new System.Drawing.Point(1152, 154);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(75, 30);
             this.textBox3.TabIndex = 5;
@@ -140,7 +142,7 @@ namespace lab6_a
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(999, 141);
+            this.label1.Location = new System.Drawing.Point(999, 126);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 25);
             this.label1.TabIndex = 6;
@@ -150,7 +152,7 @@ namespace lab6_a
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(1082, 141);
+            this.label2.Location = new System.Drawing.Point(1082, 126);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 25);
             this.label2.TabIndex = 6;
@@ -160,7 +162,7 @@ namespace lab6_a
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(1162, 141);
+            this.label3.Location = new System.Drawing.Point(1162, 126);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 25);
             this.label3.TabIndex = 6;
@@ -169,12 +171,13 @@ namespace lab6_a
             // buttonRotate
             // 
             this.buttonRotate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonRotate.Location = new System.Drawing.Point(837, 225);
+            this.buttonRotate.Location = new System.Drawing.Point(837, 210);
             this.buttonRotate.Name = "buttonRotate";
             this.buttonRotate.Size = new System.Drawing.Size(138, 67);
             this.buttonRotate.TabIndex = 7;
             this.buttonRotate.Text = "поворот";
             this.buttonRotate.UseVisualStyleBackColor = true;
+            this.buttonRotate.Click += new System.EventHandler(this.buttonRotate_Click);
             // 
             // comboBox1
             // 
@@ -185,15 +188,16 @@ namespace lab6_a
             "по OX",
             "по OY",
             "по OZ"});
-            this.comboBox1.Location = new System.Drawing.Point(1004, 243);
+            this.comboBox1.Location = new System.Drawing.Point(1004, 228);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(106, 33);
             this.comboBox1.TabIndex = 8;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // textBox4
             // 
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox4.Location = new System.Drawing.Point(1129, 254);
+            this.textBox4.Location = new System.Drawing.Point(1129, 239);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(88, 30);
             this.textBox4.TabIndex = 9;
@@ -203,7 +207,7 @@ namespace lab6_a
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(1131, 225);
+            this.label4.Location = new System.Drawing.Point(1131, 210);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(86, 25);
             this.label4.TabIndex = 10;
@@ -218,6 +222,7 @@ namespace lab6_a
             this.buttonScale.TabIndex = 11;
             this.buttonScale.Text = "масштаб";
             this.buttonScale.UseVisualStyleBackColor = true;
+            this.buttonScale.Click += new System.EventHandler(this.buttonScale_Click);
             // 
             // textBox11
             // 
@@ -264,7 +269,7 @@ namespace lab6_a
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 25);
             this.label6.TabIndex = 6;
-            this.label6.Text = "coef по z";
+            this.label6.Text = "coef по y";
             // 
             // label7
             // 
@@ -285,16 +290,18 @@ namespace lab6_a
             this.buttonMirror.TabIndex = 12;
             this.buttonMirror.Text = "отражение";
             this.buttonMirror.UseVisualStyleBackColor = true;
+            this.buttonMirror.Click += new System.EventHandler(this.buttonMirror_Click);
             // 
             // buttonRotateRound
             // 
             this.buttonRotateRound.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonRotateRound.Location = new System.Drawing.Point(837, 335);
+            this.buttonRotateRound.Location = new System.Drawing.Point(837, 293);
             this.buttonRotateRound.Name = "buttonRotateRound";
             this.buttonRotateRound.Size = new System.Drawing.Size(138, 66);
             this.buttonRotateRound.TabIndex = 19;
             this.buttonRotateRound.Text = "поворот по прямой";
             this.buttonRotateRound.UseVisualStyleBackColor = true;
+            this.buttonRotateRound.Click += new System.EventHandler(this.buttonRotateRound_Click);
             // 
             // textBox5
             // 
@@ -432,6 +439,7 @@ namespace lab6_a
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(154, 33);
             this.comboBox3.TabIndex = 23;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // textBox8
             // 
@@ -490,11 +498,32 @@ namespace lab6_a
             this.label10.TabIndex = 6;
             this.label10.Text = "по z:";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label16.Location = new System.Drawing.Point(861, 362);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(86, 25);
+            this.label16.TabIndex = 24;
+            this.label16.Text = "градусы";
+            // 
+            // textBox14
+            // 
+            this.textBox14.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox14.Location = new System.Drawing.Point(866, 389);
+            this.textBox14.Name = "textBox14";
+            this.textBox14.Size = new System.Drawing.Size(75, 30);
+            this.textBox14.TabIndex = 25;
+            this.textBox14.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1279, 633);
+            this.Controls.Add(this.textBox14);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.comboBox3);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
@@ -587,6 +616,8 @@ namespace lab6_a
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox textBox14;
     }
 }
 

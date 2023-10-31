@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,10 +85,17 @@ namespace lab6_a
         //                                                              cos  sin       -sin  cos
         double[,] matrixRotateX = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 1, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 1 } };
         //                                           cos  sin       -sin  cos
-        double[,] matrixRotateY = new double[4, 4] { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        double[,] matrixRotateZ = new double[4, 4] { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         //                                            cos   -sin                      sin    cos
-        double[,] matrixRotateZ = new double[4, 4] { { 1, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        double[,] matrixRotateY = new double[4, 4] { { 1, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
+        double[,] currentRotate;
+
+        double[,] matrixResult = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
+        double[,] matrixAxonometric = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+        double[,] matrixperspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -0.1 }, { 0, 0, 0, 1 } };
+        double[,] matrixmirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
         double[,] multipleMatrix(double[,] a, double[,] b)
         {
@@ -597,14 +605,14 @@ namespace lab6_a
                     {
                         pictureBox1.Refresh();
                         //todo proection
-
+                        axonometric();
                         break; 
                     }
                 case 4:
                     {
                         pictureBox1.Refresh();
                         //todo another proection
-
+                        parallperpective();
                         break; 
                     }
             
@@ -616,7 +624,58 @@ namespace lab6_a
         
         
         }
+        public void parallperpective()
+        {
+            var newimage = new List<PointD>();
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
 
+                var res = (multipleMatrix(matrixPoint, matrixperspectieve));
+                double c = 10.0 ;
+                res[0, 0] /= 1.0 - res[0, 3]/c;
+                res[0, 1] /= 1.0 - res[0, 3]/c;
+                newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
+            }
+            var g = Graphics.FromHwnd(pictureBox1.Handle);
+            for (int i = 0; i < list_lines.Count(); i++)
+            {
+                Point a = new Point((int)(newimage[list_lines[i].a].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].a].y) + pictureBox1.Height / 3);
+                Point b = new Point((int)(newimage[list_lines[i].b].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].b].y) + pictureBox1.Height / 3);
+
+                g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
+
+            }
+        }
+        private void axonometric()
+        {
+            double anglephi = -45.0 * Math.PI / 180.0;
+            double anglepsi = 35.26 * Math.PI / 180.0;
+            matrixAxonometric[0, 0] = Math.Cos(anglepsi);
+            matrixAxonometric[0, 1] = Math.Sin(anglephi) * Math.Sin(anglepsi);
+            matrixAxonometric[1, 1] = Math.Cos(anglephi);
+            matrixAxonometric[2, 0] = Math.Sin(anglepsi);
+            matrixAxonometric[2, 1] = -Math.Cos(anglepsi) * Math.Sin(anglephi);
+
+            var newimage = new List<PointD>();
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixAxonometric));
+
+                newimage.Add( new PointD(res[0, 0], res[0, 1], res[0, 2]));
+            }
+            var g = Graphics.FromHwnd(pictureBox1.Handle);
+            for (int i = 0; i < list_lines.Count(); i++)
+            {
+                Point a = new Point((int)(newimage[list_lines[i].a].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].a].y) + pictureBox1.Height / 3);
+                Point b = new Point((int)(newimage[list_lines[i].b].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].b].y) + pictureBox1.Height / 3);
+
+                g.DrawLine(new Pen(Color.Black, 2.0f), a  , b);
+
+            }
+        }
         private void buttonTranslite_Click(object sender, EventArgs e)
         {
             if (comboBoxTypePolyhedra.SelectedIndex == -1)
@@ -645,5 +704,161 @@ namespace lab6_a
         {
             peremalui();
         }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            /* z  y  x*/
+            switch(comboBox3.SelectedIndex){
+                case 0:
+                    matrixmirror[0, 0] = 1;
+                    matrixmirror[1, 1] = 1;
+                    matrixmirror[2, 2] = -1;
+                    break;
+                case 1:
+                    matrixmirror[0, 0] = 1;
+                    matrixmirror[1, 1] = -1;
+                    matrixmirror[2, 2] = 1;
+                    break; 
+                case 2:
+                    matrixmirror[0, 0] = -1;
+                    matrixmirror[1, 1] = 1;
+                    matrixmirror[2, 2] = 1;
+                    break; 
+            }
+
+        }
+
+        private void buttonMirror_Click(object sender, EventArgs e)
+        {
+            if (comboBox3.SelectedIndex == -1) 
+            { 
+                return; 
+            }
+
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixmirror));
+
+                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+            peremalui();
+
+
+        }
+
+        private void buttonScale_Click(object sender, EventArgs e)
+        {
+            double kx = Convert.ToDouble(textBox11.Text);
+            double ky = Convert.ToDouble(textBox12.Text);
+            double kz = Convert.ToDouble(textBox13.Text);
+
+            matrixScale[0 ,0] = kx; 
+            matrixScale[1, 1] = ky;
+            matrixScale[2, 2] = kz;
+
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixScale));
+
+                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+            peremalui();
+
+        }
+
+        private void buttonRotate_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == -1)
+                return;
+            if (textBox4.Text.Length < 1)
+                return;
+            double teta = Convert.ToDouble(textBox4.Text);
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    currentRotate = matrixRotateX;
+                    currentRotate[1, 1] = Math.Cos(teta* Math.PI / 180.0);
+                    currentRotate[1, 2] = Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[2, 1] = -Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
+                    break;
+                case 1:
+                    currentRotate = matrixRotateY;
+                    currentRotate[0, 0] = Math.Cos(teta * Math.PI / 180.0);
+                    currentRotate[0, 2] = -Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[2, 0] = Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
+                    break;
+                case 2:
+                    currentRotate = matrixRotateZ;
+                    currentRotate[0, 0] = Math.Cos(teta * Math.PI / 180.0);
+                    currentRotate[0, 1] = Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[1, 0] = -Math.Sin(teta * Math.PI / 180.0);
+                    currentRotate[1, 1] = Math.Cos(teta * Math.PI / 180.0);
+                    break;
+            }
+
+
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, currentRotate));
+
+                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+            peremalui();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void buttonRotateRound_Click(object sender, EventArgs e)
+        {
+            if (textBox5.Text == textBox8.Text && textBox6.Text == textBox9.Text && textBox7.Text == textBox10.Text)
+                return;
+            if (textBox14.Text.Length < 1)
+                return;
+            PointD a = new PointD(Convert.ToDouble(textBox5.Text), Convert.ToDouble(textBox6.Text), Convert.ToDouble(textBox7.Text));
+            PointD b = new PointD(Convert.ToDouble(textBox8.Text), Convert.ToDouble(textBox9.Text), Convert.ToDouble(textBox10.Text));
+
+            List<double> myv = new List<double>() {b.x - a.x, b.y - a.y, b.z - a.z  };
+            double modv = Math.Sqrt(Math.Pow(myv[0],2) + Math.Pow(myv[1], 2) + Math.Pow(myv[2], 2));
+            myv[0] /= modv; //l
+            myv[1] /= modv; //m
+            myv[2] /= modv; //n
+            double phi = Convert.ToDouble(textBox14.Text) * Math.PI / 180.0;
+            matrixResult[0, 0] = Math.Pow(myv[0], 2) + Math.Cos(phi)*(1.0 - Math.Pow(myv[0], 2)) ;
+            matrixResult[0, 1] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] + myv[2] * Math.Sin(phi);
+            matrixResult[0, 2] = myv[0] * (1.0 - Math.Cos(phi)) * myv[2] - myv[1] * Math.Sin(phi);
+            matrixResult[1, 0] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] - myv[2] * Math.Sin(phi);
+            matrixResult[1, 1] = Math.Pow(myv[1], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[1], 2));
+            matrixResult[1, 2] = myv[1] * (1.0 - Math.Cos(phi)) * myv[2] + myv[0] * Math.Sin(phi);
+            matrixResult[2, 0] = myv[0] * (1.0 - Math.Cos(phi)) * myv[2] + myv[1] * Math.Sin(phi);
+            matrixResult[2, 1] = myv[1] * (1.0 - Math.Cos(phi)) * myv[2] - myv[0] * Math.Sin(phi);
+            matrixResult[2, 2] = Math.Pow(myv[2], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[2], 2));
+
+
+            for (int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixResult));
+
+                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+            peremalui();
+        
+    }
     }
 }
