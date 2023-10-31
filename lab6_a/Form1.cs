@@ -94,8 +94,10 @@ namespace lab6_a
         double[,] matrixResult = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
         double[,] matrixAxonometric = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
-        double[,] matrixperspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -0.1 }, { 0, 0, 0, 1 } };
-        double[,] matrixmirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
+        double[,] matrixPerspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -0.1 }, { 0, 0, 0, 1 } };
+
+        double[,] matrixMirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
         double[,] multipleMatrix(double[,] a, double[,] b)
         {
@@ -256,13 +258,13 @@ namespace lab6_a
 
 
             Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[5], cur_lines[2] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[2], cur_lines[4], cur_lines[1] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[3] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[3] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
@@ -333,22 +335,23 @@ namespace lab6_a
 
 
             Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[8] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[11], cur_lines[2], cur_lines[1] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[10], cur_lines[3], cur_lines[2] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[9], cur_lines[0], cur_lines[3] });
-            list_pols.Add(cur_pol); //низ
+            list_pols.Add(cur_pol); 
 
             cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[8] });
-            list_pols.Add(cur_pol); //вверх
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[5], cur_lines[6], cur_lines[11] });
-            list_pols.Add(cur_pol); //вверх
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[6], cur_lines[7], cur_lines[10] });
-            list_pols.Add(cur_pol); //вверх
+            list_pols.Add(cur_pol); 
             cur_pol = new Polygon(new List<Line>() { cur_lines[7], cur_lines[4], cur_lines[9] });
-            list_pols.Add(cur_pol); //вверх
+            list_pols.Add(cur_pol); 
+
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_points.Count(); i++)
             {
@@ -604,14 +607,12 @@ namespace lab6_a
                 case 3:
                     {
                         pictureBox1.Refresh();
-                        //todo proection
                         axonometric();
                         break; 
                     }
                 case 4:
                     {
                         pictureBox1.Refresh();
-                        //todo another proection
                         parallperpective();
                         break; 
                     }
@@ -631,7 +632,7 @@ namespace lab6_a
             {
                 double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
 
-                var res = (multipleMatrix(matrixPoint, matrixperspectieve));
+                var res = (multipleMatrix(matrixPoint, matrixPerspectieve));
                 double c = 10.0 ;
                 res[0, 0] /= 1.0 - res[0, 3]/c;
                 res[0, 1] /= 1.0 - res[0, 3]/c;
@@ -708,21 +709,21 @@ namespace lab6_a
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             /* z  y  x*/
-            switch(comboBox3.SelectedIndex){
+            switch(comboBoxAxis.SelectedIndex){
                 case 0:
-                    matrixmirror[0, 0] = 1;
-                    matrixmirror[1, 1] = 1;
-                    matrixmirror[2, 2] = -1;
+                    matrixMirror[0, 0] = 1;
+                    matrixMirror[1, 1] = 1;
+                    matrixMirror[2, 2] = -1;
                     break;
                 case 1:
-                    matrixmirror[0, 0] = 1;
-                    matrixmirror[1, 1] = -1;
-                    matrixmirror[2, 2] = 1;
+                    matrixMirror[0, 0] = 1;
+                    matrixMirror[1, 1] = -1;
+                    matrixMirror[2, 2] = 1;
                     break; 
                 case 2:
-                    matrixmirror[0, 0] = -1;
-                    matrixmirror[1, 1] = 1;
-                    matrixmirror[2, 2] = 1;
+                    matrixMirror[0, 0] = -1;
+                    matrixMirror[1, 1] = 1;
+                    matrixMirror[2, 2] = 1;
                     break; 
             }
 
@@ -730,7 +731,7 @@ namespace lab6_a
 
         private void buttonMirror_Click(object sender, EventArgs e)
         {
-            if (comboBox3.SelectedIndex == -1) 
+            if (comboBoxAxis.SelectedIndex == -1) 
             { 
                 return; 
             }
@@ -739,7 +740,7 @@ namespace lab6_a
             {
                 double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
 
-                var res = (multipleMatrix(matrixPoint, matrixmirror));
+                var res = (multipleMatrix(matrixPoint, matrixMirror));
 
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
@@ -774,12 +775,12 @@ namespace lab6_a
 
         private void buttonRotate_Click(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex == -1)
+            if (comboBoxPlane.SelectedIndex == -1)
                 return;
             if (textBox4.Text.Length < 1)
                 return;
             double teta = Convert.ToDouble(textBox4.Text);
-            switch (comboBox1.SelectedIndex)
+            switch (comboBoxPlane.SelectedIndex)
             {
                 case 0:
                     currentRotate = matrixRotateX;
