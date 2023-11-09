@@ -18,13 +18,21 @@ namespace lab6_a
         List<PointD> list_points;
         List<Line> list_lines;
         List<Polygon> list_pols;
-
+        List<PointD> line_axis; 
+        List<PointD> line_polyline;
+        bool is_draw = false;
+        bool draw_axis = false;
+        bool draw_polyline = false;
+        int numb_vert = 0;
         public Form1()
         {
             InitializeComponent();
             list_points = new List<PointD>();
             list_lines = new List<Line>();
             list_pols = new List<Polygon>();
+
+            line_axis = new List<PointD>();
+            line_polyline = new List<PointD>();
             Cube();
 
         }
@@ -928,5 +936,185 @@ namespace lab6_a
                 }
             }
         }
+
+        private void buttonFigureRotation_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Refresh();
+            list_points.Clear();
+            list_lines.Clear();
+            list_pols.Clear();
+
+            comboBoxTypeProection.SelectedIndex = 0;
+            buttonDrawAxis.Enabled = true;
+            buttonDrawLine.Enabled = true;
+        }
+
+        private void buttonDrawAxis_Click(object sender, EventArgs e)
+        {
+            clickCount = 0;
+            is_draw = true;
+            draw_axis = true;
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+        }
+
+        int clickCount;
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (is_draw)
+            {
+                var g = Graphics.FromHwnd(pictureBox1.Handle);
+
+                if (draw_axis)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        line_axis.Add(new PointD(e.X, e.Y, 0));
+                        clickCount++;
+
+                        if (clickCount == 1)
+                        {
+                            g.FillRectangle(Brushes.Black, e.X, e.Y, 2, 2);
+                        }
+                        if (clickCount == 2)
+                        {
+                            pictureBox1.Refresh();
+                            if (line_polyline.Count > 0)
+                            { 
+                                //todo
+                            }
+                            g.DrawLine(new Pen(Color.Red, 2), (float)line_axis[0].x, (float)line_axis[0].y, 
+                                                              (float)line_axis[1].x, (float)line_axis[1].y);
+                            draw_axis = false;
+                            is_draw = false;
+                            clickCount = 0;
+                        }
+                    }
+
+                }
+                if (draw_polyline)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        line_polyline.Add(new PointD(e.X, e.Y, 0));
+                        clickCount++;
+
+                        if (clickCount >= 2)
+                        {
+                            g.DrawLine(new Pen(Color.Black, 2), (float)line_polyline[line_polyline.Count()-1].x, (float)line_polyline[line_polyline.Count()-1].y, 
+                                (float)line_polyline[line_polyline.Count() - 2].x, (float)line_polyline[line_polyline.Count() - 2].y);
+                        }
+                    }
+                }
+
+
+            }
+        }
+        private void buttonDrawLine_Click(object sender, EventArgs e)
+        {
+            draw_polyline = true;
+            is_draw = true;
+            buttonEnterLine.Enabled = true;
+        }
+        private void buttonEnterLine_Click(object sender, EventArgs e)
+        {
+            numb_vert = clickCount;
+            clickCount = 0;
+            draw_polyline = false;
+            is_draw = false;
+        }
+
+        private void buttonEnterFigure_Click(object sender, EventArgs e)
+        {
+            if (textBoxNumbSplit.Text.Length == 0)
+                return;
+            
+            int split = Convert.ToInt32(textBoxNumbSplit.Text);
+            
+            CreateRotation(split);
+
+            peremalui();
+        }
+
+        void CreateRotation(int split)
+        {
+            List<PointD> buf = new List<PointD>();
+            buf.AddRange(line_polyline);
+
+            double angle = 360.0 / split;
+            for (int i = 1; i < split; i++)
+            {
+                 buf.AddRange(MakeOneRotation(angle*i * Math.PI / 180.0));
+            }
+            list_points.AddRange(buf);
+            list_points.AddRange(line_polyline);
+
+            for (int i = 0; i < buf.Count() / numb_vert; i++)
+            {
+                int it1 = (numb_vert * i);
+                int it2 = (numb_vert * (i+1));
+
+
+                for (int j = 0; j < numb_vert - 1; j++)
+                {
+                    Line l1 = new Line(it1 + j, it1 + j + 1);
+                    Line l2 = new Line(it1 + j + 1, it2 + j + 1);
+                    Line l3 = new Line(it2 + j + 1, it2 + j);
+                    Line l4 = new Line(it2 + j, it1 + j);
+
+                    List<Line> lines_buf = new List<Line>() { l1, l2, l3, l4 };
+
+                    list_lines.AddRange(lines_buf);
+                    list_pols.Add(new Polygon(lines_buf));
+                }
+
+
+            }
+
+            
+
+
+
+        }
+
+
+        List<PointD> MakeOneRotation(double phi)
+        {
+            List<PointD> s = new List<PointD>();
+            PointD b = line_axis[0];
+            PointD a = line_axis[1];
+
+            List<double> myv = new List<double>() { b.x - a.x, b.y - a.y, b.z - a.z };
+            double modv = Math.Sqrt(Math.Pow(myv[0], 2) + Math.Pow(myv[1], 2) + Math.Pow(myv[2], 2));
+            myv[0] /= modv; //l
+            myv[1] /= modv; //m
+            myv[2] /= modv; //n
+
+            matrixResult[0, 0] = Math.Pow(myv[0], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[0], 2));
+            matrixResult[0, 1] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] + myv[2] * Math.Sin(phi);
+            matrixResult[0, 2] = myv[0] * (1.0 - Math.Cos(phi)) * myv[2] - myv[1] * Math.Sin(phi);
+            matrixResult[1, 0] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] - myv[2] * Math.Sin(phi);
+            matrixResult[1, 1] = Math.Pow(myv[1], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[1], 2));
+            matrixResult[1, 2] = myv[1] * (1.0 - Math.Cos(phi)) * myv[2] + myv[0] * Math.Sin(phi);
+            matrixResult[2, 0] = myv[0] * (1.0 - Math.Cos(phi)) * myv[2] + myv[1] * Math.Sin(phi);
+            matrixResult[2, 1] = myv[1] * (1.0 - Math.Cos(phi)) * myv[2] - myv[0] * Math.Sin(phi);
+            matrixResult[2, 2] = Math.Pow(myv[2], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[2], 2));
+
+
+            for (int i = 0; i < line_polyline.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { line_polyline[i].x, line_polyline[i].y, line_polyline[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixResult));
+
+                s.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
+            }
+
+            return s;
+        }
+
     }
 }
