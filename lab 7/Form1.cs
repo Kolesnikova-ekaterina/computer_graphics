@@ -545,8 +545,8 @@ namespace lab6_a
 
         void peremalui()
         {
-            if (comboBoxTypePolyhedra.SelectedIndex == -1)
-                return;
+            //if (comboBoxTypePolyhedra.SelectedIndex == -1)
+               // return;
 
             if (comboBoxTypeProection.SelectedIndex == -1)
                 return;
@@ -894,7 +894,7 @@ namespace lab6_a
 
             var lines = text.Split('\n');
             Regex rv = new Regex(@"v\s*(?<first>[0-9.-]+) (?<second>[0-9.-]+) (?<third>[0-9.-]+)");
-            Regex rf = new Regex(@"f\s*(?<first>[0-9]+(\/[0-9]*)?(\/[0-9]+)?) (?<second>[0-9]+(\/[0-9]*)?(\/[0-9]+)?) (?<third>[0-9]+(\/[0-9]*)?(\/[0-9]+)?)");
+            Regex rf = new Regex(@"\s[0-9]+(\/[0-9]*)?(\/[0-9]+)?");
             for (int i = 0; i< lines.Length; i++)
             {
                 if (rv.IsMatch(lines[i])){
@@ -909,19 +909,20 @@ namespace lab6_a
 
                 }
 
-                if (rf.IsMatch(lines[i]))
+                if (lines[i].StartsWith("f "))
                 {
-                    var m = rf.Match(lines[i]);
+                    var m = rf.Matches(lines[i]);
 
-                    int v1 = Convert.ToInt32(m.Groups["first"].ToString().Split('/')[0]) -1;
-                    int v2 = Convert.ToInt32(m.Groups["second"].ToString().Split('/')[0]) -1;
-                    int v3 = Convert.ToInt32(m.Groups["third"].ToString().Split('/')[0]) -1;
+                    List<Line> ll = new List<Line>();
 
-                    list_lines.Add(new Line(v1, v2));
-                    list_lines.Add(new Line(v2, v3));
-                    list_lines.Add(new Line(v3, v1));
-
-                    list_pols.Add(new Polygon(list_lines.GetRange(list_lines.Count - 3 , 3)));
+                    for(int j = 0; j <m.Count ; j ++ )
+                    {
+                        int v1 = Convert.ToInt32(m[j % m.Count].ToString().Split('/')[0]) - 1;
+                        int v2 = Convert.ToInt32(m[(j + 1) % m.Count].ToString().Split('/')[0]) - 1;
+                        ll.Add(new Line(v1, v2));
+                    }
+                    list_lines.AddRange(ll);
+                    list_pols.Add(new Polygon(ll));
 
 
                 }
