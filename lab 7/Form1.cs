@@ -556,8 +556,8 @@ namespace lab6_a
             //if (comboBoxTypePolyhedra.SelectedIndex == -1)
                // return;
 
-            if (comboBoxTypeProection.SelectedIndex == -1)
-                return;
+            //if (comboBoxTypeProection.SelectedIndex == -1)
+               // return;
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
@@ -901,7 +901,7 @@ namespace lab6_a
             list_pols.Clear();
 
             var lines = text.Split('\n');
-            Regex rv = new Regex(@"v\s*(?<first>[0-9.-]+) (?<second>[0-9.-]+) (?<third>[0-9.-]+)");
+            Regex rv = new Regex(@"v\s*(?<first>[0-9.-]+(,[0-9.-]*)?) (?<second>[0-9.-]+(,[0-9.-]*)?) (?<third>[0-9.-]+(,[0-9.-]*)?)");
             Regex rf = new Regex(@"\s[0-9]+(\/[0-9]*)?(\/[0-9]+)?");
             for (int i = 0; i< lines.Length; i++)
             {
@@ -1038,10 +1038,27 @@ namespace lab6_a
 
             peremalui();
         }
+        public void preparepolyline()
+        {
 
+            matrixTranslation[3, 0] = -line_axis[0].x;
+            matrixTranslation[3, 1] = -line_axis[0].y;
+            matrixTranslation[3, 2] = -line_axis[0].z;
+            for(int i = 0; i < line_polyline.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { line_polyline[i].x, line_polyline[i].y, line_polyline[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixTranslation));
+
+                line_polyline[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+
+        }
         void CreateRotation(int split)
         {
             List<PointD> buf = new List<PointD>();
+            preparepolyline();
             buf.AddRange(line_polyline);
 
             double angle = 360.0 / split;
@@ -1084,8 +1101,8 @@ namespace lab6_a
         List<PointD> MakeOneRotation(double phi)
         {
             List<PointD> s = new List<PointD>();
-            PointD b = line_axis[0];
-            PointD a = line_axis[1];
+            PointD a = line_axis[0];
+            PointD b = line_axis[1];
 
             List<double> myv = new List<double>() { b.x - a.x, b.y - a.y, b.z - a.z };
             double modv = Math.Sqrt(Math.Pow(myv[0], 2) + Math.Pow(myv[1], 2) + Math.Pow(myv[2], 2));
@@ -1116,5 +1133,64 @@ namespace lab6_a
             return s;
         }
 
+        private string createfile()
+        {
+            var s = new StringBuilder();
+
+            foreach (var p in list_points)
+            {
+                s.AppendLine( "v " + p.x + " " + p.y + " " + p.z );
+            }
+
+            foreach (var p in list_pols)
+            {
+                s.Append("f ");
+                foreach (var it in p.lines)
+                {
+                    s.Append((it.a + 1) + " ");
+                }
+                s.AppendLine( );
+            }
+
+            return s.ToString();
+
+        }
+
+        private void buttondownload_Click(object sender, EventArgs e)
+        {
+            if (list_points.Count == 0)
+                return;
+            //string text = richTextBox1.Text;
+            //MessageBox.Show(text);
+            SaveFileDialog open = new SaveFileDialog();
+            //open.Filter = ".obj";
+            // открываем окно сохранения
+            open.ShowDialog();
+
+            // присваниваем строке путь из открытого нами окна
+            string path = open.FileName;
+
+            try
+            {
+                // создаем файл используя конструкцию using
+
+                using (FileStream fs = File.Create(path))
+                {
+
+                    // создаем переменную типа массива байтов
+                    // и присваиваем ей метод перевода текста в байты
+                    byte[] info = new UTF8Encoding(true).GetBytes(createfile());
+                    // производим запись байтов в файл
+                    fs.Write(info, 0, info.Length);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+
+            }
+        }
     }
 }

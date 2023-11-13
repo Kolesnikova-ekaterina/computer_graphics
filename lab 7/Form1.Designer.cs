@@ -80,6 +80,7 @@ namespace lab6_a
             this.textBoxNumbSplit = new System.Windows.Forms.TextBox();
             this.buttonDrawAxis = new System.Windows.Forms.Button();
             this.buttonEnterFigure = new System.Windows.Forms.Button();
+            this.buttondownload = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -557,7 +558,7 @@ namespace lab6_a
             this.buttonChoseModel.Location = new System.Drawing.Point(1310, 46);
             this.buttonChoseModel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonChoseModel.Name = "buttonChoseModel";
-            this.buttonChoseModel.Size = new System.Drawing.Size(205, 34);
+            this.buttonChoseModel.Size = new System.Drawing.Size(205, 57);
             this.buttonChoseModel.TabIndex = 26;
             this.buttonChoseModel.Text = "выбрать модельку";
             this.buttonChoseModel.UseVisualStyleBackColor = true;
@@ -639,11 +640,23 @@ namespace lab6_a
             this.buttonEnterFigure.UseVisualStyleBackColor = true;
             this.buttonEnterFigure.Click += new System.EventHandler(this.buttonEnterFigure_Click);
             // 
+            // buttondownload
+            // 
+            this.buttondownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttondownload.Location = new System.Drawing.Point(1533, 46);
+            this.buttondownload.Name = "buttondownload";
+            this.buttondownload.Size = new System.Drawing.Size(159, 57);
+            this.buttondownload.TabIndex = 35;
+            this.buttondownload.Text = "сохранить";
+            this.buttondownload.UseVisualStyleBackColor = true;
+            this.buttondownload.Click += new System.EventHandler(this.buttondownload_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1704, 630);
+            this.Controls.Add(this.buttondownload);
             this.Controls.Add(this.buttonEnterFigure);
             this.Controls.Add(this.buttonDrawAxis);
             this.Controls.Add(this.textBoxNumbSplit);
@@ -757,6 +770,7 @@ namespace lab6_a
         private System.Windows.Forms.TextBox textBoxNumbSplit;
         private System.Windows.Forms.Button buttonDrawAxis;
         private System.Windows.Forms.Button buttonEnterFigure;
+        private System.Windows.Forms.Button buttondownload;
     }
 }
 
