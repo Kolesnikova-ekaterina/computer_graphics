@@ -34,7 +34,7 @@ namespace lab6_a
 
             line_axis = new List<PointD>();
             line_polyline = new List<PointD>();
-            Cube();
+            //Cube();
 
         }
 
@@ -187,10 +187,12 @@ namespace lab6_a
             list_points = cur_points;
 
             List<Line> cur_lines = new List<Line>()
-               {new Line(0,  1), new Line(0, 2), new Line(0, 4), // 0 1 2
-                new Line(6, 7), new Line(6, 4), new Line(6, 2), // 3 4 5
-                new Line(3, 1), new Line(3, 2), new Line(3, 7), // 6 7 8
-                new Line(5, 7), new Line(5, 1), new Line(5, 4) // 9 10 11
+               {new Line(0, 1), new Line(1, 3), new Line(3, 2), new Line(2, 0), 
+                new Line(6, 7), new Line(7, 3), new Line(3, 2), new Line(2, 6), 
+                new Line(3, 7), new Line(7, 5), new Line(5, 1), new Line(1, 3),
+                new Line(5, 7), new Line(7, 6), new Line(6, 4), new Line(4, 5), 
+                new Line(5, 4), new Line(4, 0), new Line(0, 1), new Line(1, 5), 
+                new Line(0, 2), new Line(2, 6), new Line(6, 4), new Line(4, 0) 
                };
 
             list_lines.Clear();
@@ -198,25 +200,10 @@ namespace lab6_a
 
             list_pols.Clear();
 
-            Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[1], cur_lines[5], cur_lines[4], cur_lines[2] });
-            list_pols.Add(cur_pol); //низ
-
-            cur_pol = new Polygon(new List<Line>() { cur_lines[6], cur_lines[8], cur_lines[9], cur_lines[10] });
-            list_pols.Add(cur_pol); // верх
-
-            cur_pol = new Polygon(new List<Line>() { cur_lines[2], cur_lines[11], cur_lines[10], cur_lines[0] });
-            list_pols.Add(cur_pol); //лево
-
-            cur_pol = new Polygon(new List<Line>() { cur_lines[8], cur_lines[7], cur_lines[5], cur_lines[3] });
-            list_pols.Add(cur_pol); // право
-
-            cur_pol = new Polygon(new List<Line>() { cur_lines[11], cur_lines[9], cur_lines[3], cur_lines[4] });
-            list_pols.Add(cur_pol); // ближняя
-
-            cur_pol = new Polygon (new List<Line>() { cur_lines[0], cur_lines[6], cur_lines[7], cur_lines[1]});
-            list_pols.Add(cur_pol); // дальняя
-
-
+            for (int i = 0; i < list_lines.Count(); i += 4)
+            {
+                list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2], list_lines[i + 3] }));
+            }
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
@@ -310,14 +297,9 @@ namespace lab6_a
                     sum_x += list_points[cur.lines[j].a].x;
                     sum_y += list_points[cur.lines[j].a].y;
                     sum_z += list_points[cur.lines[j].a].z;
-                    
-                    sum_x += list_points[cur.lines[j].b].x;
-                    sum_y += list_points[cur.lines[j].b].y;
-                    sum_z += list_points[cur.lines[j].b].z;
-
                 }
 
-                PointD new_p = new PointD(sum_x / 16.0, sum_y / 16.0, sum_z / 16.0);
+                PointD new_p = new PointD(sum_x / 4.0, sum_y / 4.0, sum_z / 4.0);
                 new_points.Add(new_p);
             }
 
@@ -334,9 +316,15 @@ namespace lab6_a
             list_points = new_points;
 
             List<Line> cur_lines = new List<Line>()
-               {new Line(0,  2), new Line(0, 4), new Line(0, 3), new Line(0, 5), // 0 1 2 3
-                new Line(1,  2), new Line(1, 4), new Line(1, 3), new Line(1, 5),  //  4 5 6 7
-                new Line(4,  2), new Line(2, 5), new Line(5, 3), new Line(3, 4),  //  8 9 10 11
+               {new Line(0,  2), new Line(2, 1), new Line(1, 0),  // 0 1 2 3
+                new Line(1,  3), new Line(3, 2), new Line(2, 1),   //  4 5 6 7
+                new Line(3,  4), new Line(4, 2), new Line(2, 3),   //  8 9 10 11
+                new Line(4,  0), new Line(0, 2), new Line(2, 4),   //  8 9 10 11
+
+                new Line(1,  5), new Line(5, 3), new Line(3, 1),   //  8 9 10 11
+                new Line(3,  5), new Line(5, 4), new Line(4, 3),   //  8 9 10 11
+                new Line(4,  5), new Line(5, 0), new Line(0, 4),   //  8 9 10 11
+                new Line(0,  5), new Line(5, 1), new Line(1, 0)   //  8 9 10 11
                };
 
             list_lines.Clear();
@@ -344,26 +332,12 @@ namespace lab6_a
 
             list_pols.Clear();
 
-
-            Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[8] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[11], cur_lines[2], cur_lines[1] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[10], cur_lines[3], cur_lines[2] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[9], cur_lines[0], cur_lines[3] });
-            list_pols.Add(cur_pol); 
-
-            cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[8] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[5], cur_lines[6], cur_lines[11] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[6], cur_lines[7], cur_lines[10] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[7], cur_lines[4], cur_lines[9] });
-            list_pols.Add(cur_pol); 
-
             var g = Graphics.FromHwnd(pictureBox1.Handle);
+            for (int i = 0; i < list_lines.Count(); i += 3)
+            {
+                list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2]}));
+            }
+
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 2;
@@ -690,9 +664,6 @@ namespace lab6_a
         }
         private void buttonTranslite_Click(object sender, EventArgs e)
         {
-            if (comboBoxTypePolyhedra.SelectedIndex == -1)
-                return;
-
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             //                                                                                                   x  y  z
             //double[,] matrixTranslation = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 1, 1, 1, 1 } };
@@ -742,10 +713,7 @@ namespace lab6_a
 
         private void buttonMirror_Click(object sender, EventArgs e)
         {
-            if (comboBoxAxis.SelectedIndex == -1) 
-            { 
-                return; 
-            }
+            
 
             for (int i = 0; i < list_points.Count; i++)
             {
@@ -786,8 +754,7 @@ namespace lab6_a
 
         private void buttonRotate_Click(object sender, EventArgs e)
         {
-            if (comboBoxPlane.SelectedIndex == -1)
-                return;
+            
             if (textBox4.Text.Length < 1)
                 return;
             double teta = Convert.ToDouble(textBox4.Text);
@@ -1064,6 +1031,25 @@ namespace lab6_a
 
 
         }
+        
+        public void slidepolyline()
+        {
+
+            matrixTranslation[3, 0] = line_axis[0].x;
+            matrixTranslation[3, 1] = line_axis[0].y;
+            matrixTranslation[3, 2] = line_axis[0].z;
+
+            for(int i = 0; i < list_points.Count; i++)
+            {
+                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                var res = (multipleMatrix(matrixPoint, matrixTranslation));
+
+                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+            }
+
+
+        }
         void CreateRotation(int split)
         {
             List<PointD> buf = new List<PointD>();
@@ -1100,9 +1086,8 @@ namespace lab6_a
 
             }
 
-            
 
-
+            slidepolyline();
 
         }
 
@@ -1206,12 +1191,12 @@ namespace lab6_a
     sqrt(x^2 + y^2 - 4)
     sin(x^2 + y^2)
     cos(0.2*x - y)
-    sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)*/
+    x^2/4 - y^2/16*/
         double multsincos(double x, double y) => Math.Sin(x) * Math.Cos(y);
-        double sqrtsqrxy(double x, double y) => Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) - 4.0);
+        double sqrtsqrxy(double x, double y) => Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + 15.0);
         double sinaqr(double x, double y) => Math.Sin(Math.Pow(x, 2) + Math.Pow(y, 2));
         double cosxminusy(double x, double y) => Math.Cos(0.2 * x - y);
-        double sinsqrdividesqrt(double x, double y) => Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2))) / Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+        double sinsqrdividesqrt(double x, double y) => Math.Pow(x, 2) / 4.0 - Math.Pow(y, 2) / 16.0;
 
 
         private void buttondrawfunction_Click(object sender, EventArgs e)
@@ -1243,6 +1228,7 @@ namespace lab6_a
                     break;
             }
 
+            peremalui();
         }
 
         private void drawfunction(Func<double, double, double> f)
@@ -1267,11 +1253,24 @@ namespace lab6_a
 
             for (int i = 0; i < n - 1; i++)
             {
+                int it1 = (n * i);
+                int it2 = (n * (i + 1));
+
                 for (int j = 0; j < n - 1; j++)
                 {
-                    
+                    Line l1 = new Line(it1 + j, it1 + j + 1);
+                    Line l2 = new Line(it1 + j + 1, it2 + j + 1);
+                    Line l3 = new Line(it2 + j + 1, it2 + j);
+                    Line l4 = new Line(it2 + j, it1 + j);
+
+                    List<Line> lines_buf = new List<Line>() { l1, l2, l3, l4 };
+
+                    list_lines.AddRange(lines_buf);
+                    list_pols.Add(new Polygon(lines_buf));
                 }
             }
+
+
 
         }
     }
