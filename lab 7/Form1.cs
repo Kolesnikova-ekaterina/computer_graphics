@@ -550,7 +550,16 @@ namespace lab6_a
 
             }
         }
-
+        /*sin(x)*cos(y)
+    sqrt(x^2 + y^2 - 4)
+    sin(x^2 + y^2)
+    cos(0.2*x - y)
+    sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)*/
+        double multsincos(double x, double y) => Math.Sin(x) * Math.Cos(y);
+        double sqrtsqrxy(double x, double y) => Math.Sqrt (Math.Pow(x, 2) + Math.Pow(y, 2) - 4.0);
+        double sinaqr(double x, double y) => Math.Sin(Math.Pow(x, 2) + Math.Pow(y, 2));
+        double cosxminusy(double x, double y) => Math.Cos(0.2*x - y);
+        double sinsqrdividesqrt(double x, double y) => Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2))) / Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
         void peremalui()
         {
             //if (comboBoxTypePolyhedra.SelectedIndex == -1)
