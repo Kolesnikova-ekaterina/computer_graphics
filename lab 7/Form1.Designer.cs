@@ -81,6 +81,14 @@ namespace lab6_a
             this.buttonDrawAxis = new System.Windows.Forms.Button();
             this.buttonEnterFigure = new System.Windows.Forms.Button();
             this.buttondownload = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.textBox17 = new System.Windows.Forms.TextBox();
+            this.textBox18 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -450,11 +458,11 @@ namespace lab6_a
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label21.Location = new System.Drawing.Point(1078, 17);
+            this.label21.Location = new System.Drawing.Point(1533, 18);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(184, 25);
+            this.label21.Size = new System.Drawing.Size(179, 25);
             this.label21.TabIndex = 22;
-            this.label21.Text = "Гена, на проекцию";
+            this.label21.Text = "Выберите график";
             // 
             // comboBoxAxis
             // 
@@ -555,7 +563,7 @@ namespace lab6_a
             // buttonChoseModel
             // 
             this.buttonChoseModel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonChoseModel.Location = new System.Drawing.Point(1310, 46);
+            this.buttonChoseModel.Location = new System.Drawing.Point(1289, 34);
             this.buttonChoseModel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonChoseModel.Name = "buttonChoseModel";
             this.buttonChoseModel.Size = new System.Drawing.Size(205, 57);
@@ -567,7 +575,7 @@ namespace lab6_a
             // buttonFigureRotation
             // 
             this.buttonFigureRotation.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonFigureRotation.Location = new System.Drawing.Point(1310, 126);
+            this.buttonFigureRotation.Location = new System.Drawing.Point(1289, 114);
             this.buttonFigureRotation.Name = "buttonFigureRotation";
             this.buttonFigureRotation.Size = new System.Drawing.Size(205, 51);
             this.buttonFigureRotation.TabIndex = 27;
@@ -579,7 +587,7 @@ namespace lab6_a
             // 
             this.buttonDrawLine.Enabled = false;
             this.buttonDrawLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonDrawLine.Location = new System.Drawing.Point(1310, 273);
+            this.buttonDrawLine.Location = new System.Drawing.Point(1289, 261);
             this.buttonDrawLine.Name = "buttonDrawLine";
             this.buttonDrawLine.Size = new System.Drawing.Size(205, 64);
             this.buttonDrawLine.TabIndex = 28;
@@ -591,7 +599,7 @@ namespace lab6_a
             // 
             this.buttonEnterLine.Enabled = false;
             this.buttonEnterLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonEnterLine.Location = new System.Drawing.Point(1310, 350);
+            this.buttonEnterLine.Location = new System.Drawing.Point(1289, 338);
             this.buttonEnterLine.Name = "buttonEnterLine";
             this.buttonEnterLine.Size = new System.Drawing.Size(205, 63);
             this.buttonEnterLine.TabIndex = 29;
@@ -603,7 +611,7 @@ namespace lab6_a
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label17.Location = new System.Drawing.Point(1305, 432);
+            this.label17.Location = new System.Drawing.Point(1284, 416);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(110, 50);
             this.label17.TabIndex = 30;
@@ -612,7 +620,7 @@ namespace lab6_a
             // textBoxNumbSplit
             // 
             this.textBoxNumbSplit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxNumbSplit.Location = new System.Drawing.Point(1442, 434);
+            this.textBoxNumbSplit.Location = new System.Drawing.Point(1421, 422);
             this.textBoxNumbSplit.Name = "textBoxNumbSplit";
             this.textBoxNumbSplit.Size = new System.Drawing.Size(73, 30);
             this.textBoxNumbSplit.TabIndex = 31;
@@ -621,7 +629,7 @@ namespace lab6_a
             // 
             this.buttonDrawAxis.Enabled = false;
             this.buttonDrawAxis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonDrawAxis.Location = new System.Drawing.Point(1310, 190);
+            this.buttonDrawAxis.Location = new System.Drawing.Point(1289, 178);
             this.buttonDrawAxis.Name = "buttonDrawAxis";
             this.buttonDrawAxis.Size = new System.Drawing.Size(205, 64);
             this.buttonDrawAxis.TabIndex = 32;
@@ -632,7 +640,7 @@ namespace lab6_a
             // buttonEnterFigure
             // 
             this.buttonEnterFigure.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonEnterFigure.Location = new System.Drawing.Point(1310, 498);
+            this.buttonEnterFigure.Location = new System.Drawing.Point(1289, 478);
             this.buttonEnterFigure.Name = "buttonEnterFigure";
             this.buttonEnterFigure.Size = new System.Drawing.Size(205, 63);
             this.buttonEnterFigure.TabIndex = 34;
@@ -643,19 +651,101 @@ namespace lab6_a
             // buttondownload
             // 
             this.buttondownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttondownload.Location = new System.Drawing.Point(1533, 46);
+            this.buttondownload.Location = new System.Drawing.Point(1289, 552);
             this.buttondownload.Name = "buttondownload";
-            this.buttondownload.Size = new System.Drawing.Size(159, 57);
+            this.buttondownload.Size = new System.Drawing.Size(205, 66);
             this.buttondownload.TabIndex = 35;
-            this.buttondownload.Text = "сохранить";
+            this.buttondownload.Text = "сохранить \r\nв файл";
             this.buttondownload.UseVisualStyleBackColor = true;
             this.buttondownload.Click += new System.EventHandler(this.buttondownload_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "sin(x)*cos(y)",
+            "sqrt(x^2 + y^2 - 4)",
+            "sin(x^2 + y^2)",
+            "cos(0.2*x - y)",
+            "sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)"});
+            this.comboBox1.Location = new System.Drawing.Point(1516, 46);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(214, 33);
+            this.comboBox1.TabIndex = 36;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label18.Location = new System.Drawing.Point(1533, 114);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(183, 25);
+            this.label18.TabIndex = 22;
+            this.label18.Text = "Задайте диапазон";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label22.Location = new System.Drawing.Point(1511, 147);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(55, 25);
+            this.label22.TabIndex = 6;
+            this.label22.Text = "по x:";
+            // 
+            // textBox15
+            // 
+            this.textBox15.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox15.Location = new System.Drawing.Point(1572, 147);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(69, 30);
+            this.textBox15.TabIndex = 37;
+            // 
+            // textBox16
+            // 
+            this.textBox16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox16.Location = new System.Drawing.Point(1661, 147);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(69, 30);
+            this.textBox16.TabIndex = 37;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label23.Location = new System.Drawing.Point(1511, 189);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(55, 25);
+            this.label23.TabIndex = 6;
+            this.label23.Text = "по y:";
+            // 
+            // textBox17
+            // 
+            this.textBox17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox17.Location = new System.Drawing.Point(1572, 189);
+            this.textBox17.Name = "textBox17";
+            this.textBox17.Size = new System.Drawing.Size(69, 30);
+            this.textBox17.TabIndex = 37;
+            // 
+            // textBox18
+            // 
+            this.textBox18.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox18.Location = new System.Drawing.Point(1661, 189);
+            this.textBox18.Name = "textBox18";
+            this.textBox18.Size = new System.Drawing.Size(69, 30);
+            this.textBox18.TabIndex = 37;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1704, 630);
+            this.ClientSize = new System.Drawing.Size(1742, 630);
+            this.Controls.Add(this.textBox18);
+            this.Controls.Add(this.textBox16);
+            this.Controls.Add(this.textBox17);
+            this.Controls.Add(this.textBox15);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.buttondownload);
             this.Controls.Add(this.buttonEnterFigure);
             this.Controls.Add(this.buttonDrawAxis);
@@ -668,6 +758,7 @@ namespace lab6_a
             this.Controls.Add(this.textBox14);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.comboBoxAxis);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.label19);
@@ -689,6 +780,8 @@ namespace lab6_a
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label8);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.label22);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label11);
@@ -771,6 +864,14 @@ namespace lab6_a
         private System.Windows.Forms.Button buttonDrawAxis;
         private System.Windows.Forms.Button buttonEnterFigure;
         private System.Windows.Forms.Button buttondownload;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.TextBox textBox16;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox textBox17;
+        private System.Windows.Forms.TextBox textBox18;
     }
 }
 
