@@ -997,7 +997,11 @@ namespace lab6_a
                             pictureBox1.Refresh();
                             if (line_polyline.Count > 0)
                             { 
-                                //todo
+                                for(int i = 0; i< line_polyline.Count - 1; i ++)
+                                {
+                                    g.DrawLine(new Pen(Color.Black, 2), (float)line_polyline[i].x, (float)line_polyline[i].y,
+                                     (float)line_polyline[i + 1].x, (float)line_polyline[i + 1].y);
+                                }
                             }
                             g.DrawLine(new Pen(Color.Red, 2), (float)line_axis[0].x, (float)line_axis[0].y, 
                                                               (float)line_axis[1].x, (float)line_axis[1].y);
