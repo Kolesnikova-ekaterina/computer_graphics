@@ -92,6 +92,7 @@ namespace lab6_a
             this.buttondrawfunction = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox19 = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -668,10 +669,10 @@ namespace lab6_a
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "sin(x)*cos(y)",
-            "sqrt(x^2 + y^2 - 4)",
+            "sqrt(x^2 + y^2 + 15)",
             "sin(x^2 + y^2)",
             "cos(0.2*x - y)",
-            "sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)"});
+            "x^2/4 - y^2/16"});
             this.comboBox1.Location = new System.Drawing.Point(1516, 46);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(214, 33);
@@ -773,11 +774,21 @@ namespace lab6_a
             this.textBox19.TabIndex = 40;
             this.textBox19.Text = "10";
             // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label25.Location = new System.Drawing.Point(1054, 18);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(184, 25);
+            this.label25.TabIndex = 21;
+            this.label25.Text = "Гена, на проекцию";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1742, 630);
+            this.ClientSize = new System.Drawing.Size(1924, 630);
             this.Controls.Add(this.textBox19);
             this.Controls.Add(this.label24);
             this.Controls.Add(this.buttondrawfunction);
@@ -801,6 +812,7 @@ namespace lab6_a
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
+            this.Controls.Add(this.label25);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.comboBoxTypeProection);
             this.Controls.Add(this.buttonRotateRound);
@@ -915,6 +927,7 @@ namespace lab6_a
         private System.Windows.Forms.Button buttondrawfunction;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TextBox textBox19;
+        private System.Windows.Forms.Label label25;
     }
 }
 
