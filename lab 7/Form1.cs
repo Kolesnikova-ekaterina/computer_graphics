@@ -944,6 +944,10 @@ namespace lab6_a
             list_lines.Clear();
             list_pols.Clear();
 
+
+            line_axis = new List<PointD>();
+            line_polyline = new List<PointD>();
+
             comboBoxTypeProection.SelectedIndex = 0;
             buttonDrawAxis.Enabled = true;
             buttonDrawLine.Enabled = true;
@@ -977,7 +981,7 @@ namespace lab6_a
 
                         if (clickCount == 1)
                         {
-                            g.FillRectangle(Brushes.Black, e.X, e.Y, 2, 2);
+                            g.FillRectangle(Brushes.Red, e.X, e.Y, 2, 2);
                         }
                         if (clickCount == 2)
                         {
@@ -1192,5 +1196,6 @@ namespace lab6_a
 
             }
         }
+
     }
 }
