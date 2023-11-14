@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace lab6_a
 {
@@ -550,17 +551,8 @@ namespace lab6_a
 
             }
         }
-        /*sin(x)*cos(y)
-    sqrt(x^2 + y^2 - 4)
-    sin(x^2 + y^2)
-    cos(0.2*x - y)
-    sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)*/
-        double multsincos(double x, double y) => Math.Sin(x) * Math.Cos(y);
-        double sqrtsqrxy(double x, double y) => Math.Sqrt (Math.Pow(x, 2) + Math.Pow(y, 2) - 4.0);
-        double sinaqr(double x, double y) => Math.Sin(Math.Pow(x, 2) + Math.Pow(y, 2));
-        double cosxminusy(double x, double y) => Math.Cos(0.2*x - y);
-        double sinsqrdividesqrt(double x, double y) => Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2))) / Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-        void peremalui()
+
+         void peremalui()
         {
             //if (comboBoxTypePolyhedra.SelectedIndex == -1)
                // return;
@@ -1210,5 +1202,77 @@ namespace lab6_a
             }
         }
 
+        /*sin(x)*cos(y)
+    sqrt(x^2 + y^2 - 4)
+    sin(x^2 + y^2)
+    cos(0.2*x - y)
+    sin(sqrt(x^2 + y^2))/sqrt(x^2 + y^2)*/
+        double multsincos(double x, double y) => Math.Sin(x) * Math.Cos(y);
+        double sqrtsqrxy(double x, double y) => Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) - 4.0);
+        double sinaqr(double x, double y) => Math.Sin(Math.Pow(x, 2) + Math.Pow(y, 2));
+        double cosxminusy(double x, double y) => Math.Cos(0.2 * x - y);
+        double sinsqrdividesqrt(double x, double y) => Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2))) / Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+
+        private void buttondrawfunction_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == -1)
+                return;
+            list_points.Clear();
+            list_lines.Clear();
+            list_pols.Clear();
+
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    drawfunction(multsincos);
+                    break;
+                case 1:
+                    drawfunction(sqrtsqrxy);
+                    break;
+                case 2:
+                    drawfunction(sinaqr);
+                    break;
+                case 3:
+                    drawfunction(cosxminusy);
+                    break;
+                case 4:
+                    drawfunction(sinsqrdividesqrt);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void drawfunction(Func<double, double, double> f)
+        {
+            double xmin = Convert.ToDouble(textBox15.Text.Replace( '.',','));
+            double xmax = Convert.ToDouble(textBox16.Text.Replace('.', ',' ));
+            double ymin = Convert.ToDouble(textBox17.Text.Replace('.', ','));
+            double ymax = Convert.ToDouble(textBox18.Text.Replace('.', ','));
+
+            int n = Convert.ToInt32(textBox19.Text);
+            double hx = (xmax - xmin) / n;
+            double hy = (ymax - ymin) / n;
+
+            for (int i = 0; i < n; i++) 
+            { 
+                for (int j = 0; j < n; j++)
+                {
+                    PointD p = new PointD(xmin + i * hx, ymin + j * hy, f(xmin + i * hx, ymin + j * hy));
+                    list_points.Add(p);
+                }
+            }
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                for (int j = 0; j < n - 1; j++)
+                {
+                    
+                }
+            }
+
+        }
     }
 }

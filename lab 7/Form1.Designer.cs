@@ -89,6 +89,9 @@ namespace lab6_a
             this.label23 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
             this.textBox18 = new System.Windows.Forms.TextBox();
+            this.buttondrawfunction = new System.Windows.Forms.Button();
+            this.label24 = new System.Windows.Forms.Label();
+            this.textBox19 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -701,6 +704,7 @@ namespace lab6_a
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(69, 30);
             this.textBox15.TabIndex = 37;
+            this.textBox15.Text = "0.0\r\n";
             // 
             // textBox16
             // 
@@ -709,6 +713,7 @@ namespace lab6_a
             this.textBox16.Name = "textBox16";
             this.textBox16.Size = new System.Drawing.Size(69, 30);
             this.textBox16.TabIndex = 37;
+            this.textBox16.Text = "10.0";
             // 
             // label23
             // 
@@ -727,6 +732,7 @@ namespace lab6_a
             this.textBox17.Name = "textBox17";
             this.textBox17.Size = new System.Drawing.Size(69, 30);
             this.textBox17.TabIndex = 37;
+            this.textBox17.Text = "0.0";
             // 
             // textBox18
             // 
@@ -735,12 +741,46 @@ namespace lab6_a
             this.textBox18.Name = "textBox18";
             this.textBox18.Size = new System.Drawing.Size(69, 30);
             this.textBox18.TabIndex = 37;
+            this.textBox18.Text = "10.0";
+            // 
+            // buttondrawfunction
+            // 
+            this.buttondrawfunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttondrawfunction.Location = new System.Drawing.Point(1516, 336);
+            this.buttondrawfunction.Name = "buttondrawfunction";
+            this.buttondrawfunction.Size = new System.Drawing.Size(214, 64);
+            this.buttondrawfunction.TabIndex = 38;
+            this.buttondrawfunction.Text = "нарисовать\r\nфункцию\r\n";
+            this.buttondrawfunction.UseVisualStyleBackColor = true;
+            this.buttondrawfunction.Click += new System.EventHandler(this.buttondrawfunction_Click);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label24.Location = new System.Drawing.Point(1511, 268);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(110, 50);
+            this.label24.TabIndex = 39;
+            this.label24.Text = "Кол-во\r\nразбиений";
+            // 
+            // textBox19
+            // 
+            this.textBox19.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox19.Location = new System.Drawing.Point(1661, 278);
+            this.textBox19.Name = "textBox19";
+            this.textBox19.Size = new System.Drawing.Size(69, 30);
+            this.textBox19.TabIndex = 40;
+            this.textBox19.Text = "10";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1742, 630);
+            this.Controls.Add(this.textBox19);
+            this.Controls.Add(this.label24);
+            this.Controls.Add(this.buttondrawfunction);
             this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox16);
             this.Controls.Add(this.textBox17);
@@ -872,6 +912,9 @@ namespace lab6_a
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox textBox17;
         private System.Windows.Forms.TextBox textBox18;
+        private System.Windows.Forms.Button buttondrawfunction;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox textBox19;
     }
 }
 
