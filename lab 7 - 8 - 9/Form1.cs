@@ -812,9 +812,9 @@ namespace lab6_a
 
         private void buttonScale_Click(object sender, EventArgs e)
         {
-            double kx = Convert.ToDouble(textBox11.Text);
-            double ky = Convert.ToDouble(textBox12.Text);
-            double kz = Convert.ToDouble(textBox13.Text);
+            double kx = Convert.ToDouble(textBox11.Text.Replace('.', ','));
+            double ky = Convert.ToDouble(textBox12.Text.Replace('.', ','));
+            double kz = Convert.ToDouble(textBox13.Text.Replace('.', ','));
 
             matrixScale[0 ,0] = kx; 
             matrixScale[1, 1] = ky;
@@ -983,6 +983,8 @@ namespace lab6_a
 
 
                 }
+
+                polyhedra = new Polyhedra(list_pols);
             }
         }
 
