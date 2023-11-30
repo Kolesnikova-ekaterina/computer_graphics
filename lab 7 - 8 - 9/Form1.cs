@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,9 +17,10 @@ namespace lab6_a
 {
     public partial class Form1 : Form
     {
-        List<PointD> list_points;
+        static List<PointD> list_points;
         List<Line> list_lines;
         List<Polygon> list_pols;
+        Polyhedra polyhedra;
         List<PointD> line_axis; 
         List<PointD> line_polyline;
         bool is_draw = false;
@@ -34,10 +36,30 @@ namespace lab6_a
 
             line_axis = new List<PointD>();
             line_polyline = new List<PointD>();
+
             //Cube();
 
         }
 
+        public class Vector
+        {
+            public double x;
+            public double y;
+            public double z;
+
+            public Vector(double xx, double yy, double zz)
+            {
+                x = xx;
+                y = yy;
+                z = zz;
+            }
+            public void reverse()
+            {
+                x *= -1;
+                y *= -1;
+                z *= -1;
+            }
+        }
 
         public class PointD
         {
@@ -59,6 +81,7 @@ namespace lab6_a
 
             public int a;
             public int b;
+            public bool isvisible = true;
 
             public Line(int aa, int bb)
             {
@@ -71,10 +94,30 @@ namespace lab6_a
         {
 
             public List<Line> lines;
-
+            public Vector normal;
+            public bool isvisible = true;
             public Polygon(List<Line> l)
             {
                 lines = l;
+                normal = null;
+            }
+
+            public void findnormal(PointD center)
+            {
+                double ax = list_points[lines[0].b].x - list_points[lines[0].a].x;
+                double ay = list_points[lines[0].b].y - list_points[lines[0].a].y;
+                double az = list_points[lines[0].b].z - list_points[lines[0].a].z;
+
+                double bx = list_points[lines[1].b].x - list_points[lines[1].a].x;
+                double by = list_points[lines[1].b].y - list_points[lines[1].a].y;
+                double bz = list_points[lines[1].b].z - list_points[lines[1].a].z;
+
+                normal = new Vector(ay*bz - az*by, az*bx - ax*bz, ax*by - ay*bx );
+                double D = -(list_points[lines[0].b].x * normal.x + list_points[lines[0].b].y * normal.y + list_points[lines[0].b].z * normal.z);
+                if (ononeside(normal, D, center, list_points[lines[0].b]))
+                {
+                    normal.reverse();
+                }
             }
         }
 
@@ -82,10 +125,32 @@ namespace lab6_a
         {
 
             public List<Polygon> polygons;
-
+            public PointD center;
             public Polyhedra(List<Polygon> l)
             {
                 polygons = l;
+                findcenter();
+            }
+
+            public void findcenter()
+            {
+                double x = 0, y = 0, z = 0;
+                int count = 0;
+                foreach (var p in polygons)
+                {
+                    foreach (var l in p.lines)
+                    {
+                        count++;
+                        x += list_points[l.a].x;
+                        y += list_points[l.a].y;
+                        z += list_points[l.a].z;
+                    }
+                }
+                center = new PointD(x / count, y / count, z / count);
+                for (int i =0; i< polygons.Count; i++)
+                {
+                    polygons[i].findnormal(center); 
+                }
             }
         }
 
@@ -205,6 +270,10 @@ namespace lab6_a
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2], list_lines[i + 3] }));
             }
 
+            polyhedra = new Polyhedra(list_pols);
+
+
+
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
             for (int i = 0; i < list_points.Count(); i++)
@@ -243,26 +312,33 @@ namespace lab6_a
             Cube();
             pictureBox1.Refresh();
 
-            var templist = new List<PointD> { list_points[4], list_points[1], list_points[2], list_points[7], };
+            var templist = new List<PointD> { list_points[4], list_points[1], list_points[2], list_points[7] };
             list_points.Clear();
             list_points = templist;
-
+            /*
             var cur_lines = new List<Line>() {new Line(0,  1), new Line(0, 2), new Line(0, 3),  // 0, 1, 2 
-                                          new Line(1,  2), new Line(2, 3), new Line(3, 1) }; // 3, 4, 5
+                                          new Line(1,  2), new Line(2, 3), new Line(3, 1) }; // 3, 4, 5*/
+
+            List<Line> cur_lines = new List<Line>()
+               {new Line(0, 2), new Line(2, 1), new Line(1, 0),
+                new Line(3, 0), new Line(0, 1), new Line(1, 3),
+                new Line(3, 1), new Line(1, 2), new Line(2, 3),
+                new Line(2, 0), new Line(0, 3), new Line(3, 2)};
+
             list_lines.Clear();
             list_lines = cur_lines;
 
             list_pols.Clear();
 
 
-            Polygon cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[5], cur_lines[2] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[2], cur_lines[4], cur_lines[1] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[0], cur_lines[1], cur_lines[3] });
-            list_pols.Add(cur_pol); 
-            cur_pol = new Polygon(new List<Line>() { cur_lines[4], cur_lines[5], cur_lines[3] });
-            list_pols.Add(cur_pol); 
+
+            for (int i = 0; i < list_lines.Count(); i += 3)
+            {
+                list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
+            }
+
+
+            polyhedra = new Polyhedra(list_pols);
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
@@ -337,13 +413,14 @@ namespace lab6_a
             {
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2]}));
             }
-
+            /*
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 2;
                 list_points[i].y *= 2;
                 list_points[i].z *= 2;
-            }
+            }*/
+            polyhedra = new Polyhedra(list_pols);
             for (int i = 0; i < list_lines.Count(); i++)
             {
                 Point a = new Point((int)(list_points[list_lines[i].a].x ), (int)(list_points[list_lines[i].a].y ));
@@ -418,6 +495,7 @@ namespace lab6_a
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
             }
 
+            polyhedra = new Polyhedra(list_pols);
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_points.Count(); i++)
@@ -506,6 +584,7 @@ namespace lab6_a
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2], list_lines[i + 3], list_lines[i + 4] }));
             }
 
+            polyhedra = new Polyhedra(list_pols);
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_points.Count(); i++)
             {
@@ -655,6 +734,8 @@ namespace lab6_a
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_lines.Count(); i++)
             {
+                if (!list_lines[i].isvisible)
+                    continue;
                 Point a = new Point((int)(newimage[list_lines[i].a].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].a].y) + pictureBox1.Height / 3);
                 Point b = new Point((int)(newimage[list_lines[i].b].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].b].y) + pictureBox1.Height / 3);
 
@@ -1085,7 +1166,7 @@ namespace lab6_a
 
 
             }
-
+            polyhedra = new Polyhedra(list_pols);
 
             slidepolyline();
 
@@ -1271,6 +1352,77 @@ namespace lab6_a
             }
 
 
+
+        }
+        
+        static public bool ononeside(Vector n, double D, PointD center, PointD p)
+        {
+            return ((p.x+ n.x ) * n.x + (p.y+n.y) * n.y +  (p.z + n.z) * n.z + D) * (n.x*center.x + n.y * center.y + n.z * center.z + D) > 0  ;
+        }
+
+        private void deleteinvisible_Click(object sender, EventArgs e)
+        {
+            Vector viev = new Vector(-1, -1.05, 1);
+            int i = 0;
+            foreach (var p in list_pols)
+            {
+                double c = (p.normal.x * viev.x + p.normal.y * viev.y + p.normal.z * viev.z);
+                c /= Math.Sqrt(Math.Pow(p.normal.x, 2) + Math.Pow(p.normal.y, 2) + Math.Pow(p.normal.z, 2)) * Math.Sqrt(Math.Pow(viev.x, 2) + Math.Pow(viev.y, 2) + Math.Pow(viev.z, 2));
+
+                double arc = Math.Acos(c);
+                if (arc*180/Math.PI > 90)
+                {
+                    //list_pols[i].isvisible = false;
+                    for (int j = 0; j < list_pols[i].lines.Count; j++)
+                    {
+                        list_lines[list_pols[i].lines.Count * i + j].isvisible = false;
+                    }
+                }
+                i++;
+            }
+
+            peremalui();
+        }
+
+        public void returnvisible()
+        {
+            for(int i = 0; i< list_lines.Count; i++)
+            {
+                list_lines[i].isvisible = true;
+            }
+        }
+        private void returntovisible_Click(object sender, EventArgs e)
+        {
+            returnvisible();
+            peremalui();
+        }
+
+        private void dancetime_Click(object sender, EventArgs e)
+        {
+            double teta = 5;
+            currentRotate = matrixRotateY;
+            currentRotate[0, 0] = Math.Cos(teta * Math.PI / 180.0);
+            currentRotate[0, 2] = -Math.Sin(teta * Math.PI / 180.0);
+            currentRotate[2, 0] = Math.Sin(teta * Math.PI / 180.0);
+            currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
+            for (int it = 0; it < 360; it += (int)teta) { 
+                for (int i = 0; i < list_points.Count; i++)
+                {
+                    double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
+
+                    var res = (multipleMatrix(matrixPoint, currentRotate));
+
+                    list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
+                }
+
+                polyhedra.findcenter();
+                System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+
+
+
+            }
 
         }
     }
