@@ -21,7 +21,7 @@ namespace lab6_a
         List<Line> list_lines;
         List<Polygon> list_pols;
         Polyhedra polyhedra;
-        List<PointD> line_axis; 
+        List<PointD> line_axis;
         List<PointD> line_polyline;
         bool is_draw = false;
         bool draw_axis = false;
@@ -89,7 +89,7 @@ namespace lab6_a
                 b = bb;
             }
         }
-        
+
         public class Polygon
         {
 
@@ -112,7 +112,7 @@ namespace lab6_a
                 double by = list_points[lines[1].b].y - list_points[lines[1].a].y;
                 double bz = list_points[lines[1].b].z - list_points[lines[1].a].z;
 
-                normal = new Vector(ay*bz - az*by, az*bx - ax*bz, ax*by - ay*bx );
+                normal = new Vector(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx);
                 double D = -(list_points[lines[0].b].x * normal.x + list_points[lines[0].b].y * normal.y + list_points[lines[0].b].z * normal.z);
                 if (ononeside(normal, D, center, list_points[lines[0].b]))
                 {
@@ -147,15 +147,48 @@ namespace lab6_a
                     }
                 }
                 center = new PointD(x / count, y / count, z / count);
-                for (int i =0; i< polygons.Count; i++)
+                for (int i = 0; i < polygons.Count; i++)
                 {
-                    polygons[i].findnormal(center); 
+                    polygons[i].findnormal(center);
                 }
             }
         }
 
+        public class Camera
+        {
+            double x;
+            double y;
+            double z;
+            Vector view;
+
+            public Camera(double xx, double yy, double zz, Vector v)
+            {
+                x = xx;
+                y = yy;
+                z = zz;
+                view = v;
+            }
+
+
+        }
+
+        public class Zbuf
+        {
+            double depth;
+            Color color;
+
+            public Zbuf(double d, Color c)
+            {
+                depth = d;
+                color = c;
+            }
+
+        }
+
+
+
         //                                                                                                 x  y  z
-        double[,] matrixTranslation = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 1, 1, 1, 1} };
+        double[,] matrixTranslation = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 1, 1, 1, 1 } };
         //                                           x                  y                  z
         double[,] matrixScale = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         //                                                              cos  sin       -sin  cos
@@ -174,6 +207,8 @@ namespace lab6_a
         double[,] matrixPerspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -0.1 }, { 0, 0, 0, 1 } };
 
         double[,] matrixMirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
+        double[,] matrixView = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
         double[,] multipleMatrix(double[,] a, double[,] b)
         {
@@ -236,7 +271,7 @@ namespace lab6_a
                     {
                         Dodecahedron();
                         break;
-                    }       
+                    }
             }
 
 
@@ -252,12 +287,12 @@ namespace lab6_a
             list_points = cur_points;
 
             List<Line> cur_lines = new List<Line>()
-               {new Line(0, 1), new Line(1, 3), new Line(3, 2), new Line(2, 0), 
-                new Line(6, 7), new Line(7, 3), new Line(3, 2), new Line(2, 6), 
+               {new Line(0, 1), new Line(1, 3), new Line(3, 2), new Line(2, 0),
+                new Line(6, 7), new Line(7, 3), new Line(3, 2), new Line(2, 6),
                 new Line(3, 7), new Line(7, 5), new Line(5, 1), new Line(1, 3),
-                new Line(5, 7), new Line(7, 6), new Line(6, 4), new Line(4, 5), 
-                new Line(5, 4), new Line(4, 0), new Line(0, 1), new Line(1, 5), 
-                new Line(0, 2), new Line(2, 6), new Line(6, 4), new Line(4, 0) 
+                new Line(5, 7), new Line(7, 6), new Line(6, 4), new Line(4, 5),
+                new Line(5, 4), new Line(4, 0), new Line(0, 1), new Line(1, 5),
+                new Line(0, 2), new Line(2, 6), new Line(6, 4), new Line(4, 0)
                };
 
             list_lines.Clear();
@@ -286,7 +321,7 @@ namespace lab6_a
 
             for (int i = 0; i < list_lines.Count(); i++)
             {
-                
+
 
                 Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].y));
                 Point b = new Point((int)(list_points[list_lines[i].b].x), (int)(list_points[list_lines[i].b].y));
@@ -411,7 +446,7 @@ namespace lab6_a
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_lines.Count(); i += 3)
             {
-                list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2]}));
+                list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
             }
             /*
             for (int i = 0; i < list_points.Count(); i++)
@@ -423,8 +458,8 @@ namespace lab6_a
             polyhedra = new Polyhedra(list_pols);
             for (int i = 0; i < list_lines.Count(); i++)
             {
-                Point a = new Point((int)(list_points[list_lines[i].a].x ), (int)(list_points[list_lines[i].a].y ));
-                Point b = new Point((int)(list_points[list_lines[i].b].x ), (int)(list_points[list_lines[i].b].y ));
+                Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].y));
+                Point b = new Point((int)(list_points[list_lines[i].b].x), (int)(list_points[list_lines[i].b].y));
 
                 g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
 
@@ -525,7 +560,7 @@ namespace lab6_a
         void Dodecahedron()
         {
             Icosahedron();
-            pictureBox1.Refresh(); 
+            pictureBox1.Refresh();
 
             List<PointD> new_points = new List<PointD>();
 
@@ -597,21 +632,21 @@ namespace lab6_a
             }
             for (int i = 0; i < list_lines.Count(); i++)
             {
-                Point a = new Point((int)(list_points[list_lines[i].a].x ), (int)(list_points[list_lines[i].a].y ));
-                Point b = new Point((int)(list_points[list_lines[i].b].x ), (int)(list_points[list_lines[i].b].y ));
+                Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].y));
+                Point b = new Point((int)(list_points[list_lines[i].b].x), (int)(list_points[list_lines[i].b].y));
 
                 g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
 
             }
         }
 
-         void peremalui()
+        void peremalui()
         {
             //if (comboBoxTypePolyhedra.SelectedIndex == -1)
-               // return;
+            // return;
 
             //if (comboBoxTypeProection.SelectedIndex == -1)
-               // return;
+            // return;
 
             var g = Graphics.FromHwnd(pictureBox1.Handle);
 
@@ -638,7 +673,7 @@ namespace lab6_a
 
                         }
 
-                        break; 
+                        break;
                     }
                 case 1:
                     {
@@ -652,7 +687,7 @@ namespace lab6_a
 
                         }
 
-                        break; 
+                        break;
                     }
                 case 2:
                     {
@@ -666,28 +701,28 @@ namespace lab6_a
 
                         }
 
-                        break; 
+                        break;
                     }
                 case 3:
                     {
                         pictureBox1.Refresh();
                         axonometric();
-                        break; 
+                        break;
                     }
                 case 4:
                     {
                         pictureBox1.Refresh();
                         parallperpective();
-                        break; 
+                        break;
                     }
-            
-            
-            
+
+
+
             }
-        
-        
-        
-        
+
+
+
+
         }
         public void parallperpective()
         {
@@ -697,9 +732,9 @@ namespace lab6_a
                 double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
 
                 var res = (multipleMatrix(matrixPoint, matrixPerspectieve));
-                double c = 10.0 ;
-                res[0, 0] /= 1.0 - res[0, 3]/c;
-                res[0, 1] /= 1.0 - res[0, 3]/c;
+                double c = 10.0;
+                res[0, 0] /= 1.0 - res[0, 3] / c;
+                res[0, 1] /= 1.0 - res[0, 3] / c;
                 newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
             }
             var g = Graphics.FromHwnd(pictureBox1.Handle);
@@ -729,7 +764,7 @@ namespace lab6_a
 
                 var res = (multipleMatrix(matrixPoint, matrixAxonometric));
 
-                newimage.Add( new PointD(res[0, 0], res[0, 1], res[0, 2]));
+                newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
             }
             var g = Graphics.FromHwnd(pictureBox1.Handle);
             for (int i = 0; i < list_lines.Count(); i++)
@@ -739,7 +774,7 @@ namespace lab6_a
                 Point a = new Point((int)(newimage[list_lines[i].a].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].a].y) + pictureBox1.Height / 3);
                 Point b = new Point((int)(newimage[list_lines[i].b].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].b].y) + pictureBox1.Height / 3);
 
-                g.DrawLine(new Pen(Color.Black, 2.0f), a  , b);
+                g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
 
             }
         }
@@ -772,7 +807,7 @@ namespace lab6_a
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             /* z  y  x*/
-            switch(comboBoxAxis.SelectedIndex){
+            switch (comboBoxAxis.SelectedIndex) {
                 case 0:
                     matrixMirror[0, 0] = 1;
                     matrixMirror[1, 1] = 1;
@@ -782,19 +817,19 @@ namespace lab6_a
                     matrixMirror[0, 0] = 1;
                     matrixMirror[1, 1] = -1;
                     matrixMirror[2, 2] = 1;
-                    break; 
+                    break;
                 case 2:
                     matrixMirror[0, 0] = -1;
                     matrixMirror[1, 1] = 1;
                     matrixMirror[2, 2] = 1;
-                    break; 
+                    break;
             }
 
         }
 
         private void buttonMirror_Click(object sender, EventArgs e)
         {
-            
+
 
             for (int i = 0; i < list_points.Count; i++)
             {
@@ -816,7 +851,7 @@ namespace lab6_a
             double ky = Convert.ToDouble(textBox12.Text.Replace('.', ','));
             double kz = Convert.ToDouble(textBox13.Text.Replace('.', ','));
 
-            matrixScale[0 ,0] = kx; 
+            matrixScale[0, 0] = kx;
             matrixScale[1, 1] = ky;
             matrixScale[2, 2] = kz;
 
@@ -835,7 +870,7 @@ namespace lab6_a
 
         private void buttonRotate_Click(object sender, EventArgs e)
         {
-            
+
             if (textBox4.Text.Length < 1)
                 return;
             double teta = Convert.ToDouble(textBox4.Text);
@@ -843,7 +878,7 @@ namespace lab6_a
             {
                 case 0:
                     currentRotate = matrixRotateX;
-                    currentRotate[1, 1] = Math.Cos(teta* Math.PI / 180.0);
+                    currentRotate[1, 1] = Math.Cos(teta * Math.PI / 180.0);
                     currentRotate[1, 2] = Math.Sin(teta * Math.PI / 180.0);
                     currentRotate[2, 1] = -Math.Sin(teta * Math.PI / 180.0);
                     currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
@@ -879,7 +914,7 @@ namespace lab6_a
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
+
         }
 
         private void buttonRotateRound_Click(object sender, EventArgs e)
@@ -891,13 +926,13 @@ namespace lab6_a
             PointD a = new PointD(Convert.ToDouble(textBox5.Text), Convert.ToDouble(textBox6.Text), Convert.ToDouble(textBox7.Text));
             PointD b = new PointD(Convert.ToDouble(textBox8.Text), Convert.ToDouble(textBox9.Text), Convert.ToDouble(textBox10.Text));
 
-            List<double> myv = new List<double>() {b.x - a.x, b.y - a.y, b.z - a.z  };
-            double modv = Math.Sqrt(Math.Pow(myv[0],2) + Math.Pow(myv[1], 2) + Math.Pow(myv[2], 2));
+            List<double> myv = new List<double>() { b.x - a.x, b.y - a.y, b.z - a.z };
+            double modv = Math.Sqrt(Math.Pow(myv[0], 2) + Math.Pow(myv[1], 2) + Math.Pow(myv[2], 2));
             myv[0] /= modv; //l
             myv[1] /= modv; //m
             myv[2] /= modv; //n
             double phi = Convert.ToDouble(textBox14.Text) * Math.PI / 180.0;
-            matrixResult[0, 0] = Math.Pow(myv[0], 2) + Math.Cos(phi)*(1.0 - Math.Pow(myv[0], 2)) ;
+            matrixResult[0, 0] = Math.Pow(myv[0], 2) + Math.Cos(phi) * (1.0 - Math.Pow(myv[0], 2));
             matrixResult[0, 1] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] + myv[2] * Math.Sin(phi);
             matrixResult[0, 2] = myv[0] * (1.0 - Math.Cos(phi)) * myv[2] - myv[1] * Math.Sin(phi);
             matrixResult[1, 0] = myv[0] * (1.0 - Math.Cos(phi)) * myv[1] - myv[2] * Math.Sin(phi);
@@ -918,7 +953,7 @@ namespace lab6_a
             }
 
             peremalui();
-        
+
         }
 
         private OpenFileDialog openFileDialog1;
@@ -952,12 +987,12 @@ namespace lab6_a
             var lines = text.Split('\n');
             Regex rv = new Regex(@"v\s*(?<first>[0-9.-]+(,[0-9.-]*)?) (?<second>[0-9.-]+(,[0-9.-]*)?) (?<third>[0-9.-]+(,[0-9.-]*)?)");
             Regex rf = new Regex(@"\s[0-9]+(\/[0-9]*)?(\/[0-9]+)?");
-            for (int i = 0; i< lines.Length; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
-                if (rv.IsMatch(lines[i])){
+                if (rv.IsMatch(lines[i])) {
                     var m = rv.Match(lines[i]);
 
-                    double x = 10 *Convert.ToDouble(m.Groups["first"].ToString().Replace('.', ','));
+                    double x = 10 * Convert.ToDouble(m.Groups["first"].ToString().Replace('.', ','));
                     double y = 10 * Convert.ToDouble(m.Groups["second"].ToString().Replace('.', ','));
                     double z = 10 * Convert.ToDouble(m.Groups["third"].ToString().Replace('.', ','));
                     PointD p = new PointD(x, y, z);
@@ -972,7 +1007,7 @@ namespace lab6_a
 
                     List<Line> ll = new List<Line>();
 
-                    for(int j = 0; j <m.Count ; j ++ )
+                    for (int j = 0; j < m.Count; j++)
                     {
                         int v1 = Convert.ToInt32(m[j % m.Count].ToString().Split('/')[0]) - 1;
                         int v2 = Convert.ToInt32(m[(j + 1) % m.Count].ToString().Split('/')[0]) - 1;
@@ -1038,14 +1073,14 @@ namespace lab6_a
                         {
                             pictureBox1.Refresh();
                             if (line_polyline.Count > 0)
-                            { 
-                                for(int i = 0; i< line_polyline.Count - 1; i ++)
+                            {
+                                for (int i = 0; i < line_polyline.Count - 1; i++)
                                 {
                                     g.DrawLine(new Pen(Color.Black, 2), (float)line_polyline[i].x, (float)line_polyline[i].y,
                                      (float)line_polyline[i + 1].x, (float)line_polyline[i + 1].y);
                                 }
                             }
-                            g.DrawLine(new Pen(Color.Red, 2), (float)line_axis[0].x, (float)line_axis[0].y, 
+                            g.DrawLine(new Pen(Color.Red, 2), (float)line_axis[0].x, (float)line_axis[0].y,
                                                               (float)line_axis[1].x, (float)line_axis[1].y);
                             draw_axis = false;
                             is_draw = false;
@@ -1063,7 +1098,7 @@ namespace lab6_a
 
                         if (clickCount >= 2)
                         {
-                            g.DrawLine(new Pen(Color.Black, 2), (float)line_polyline[line_polyline.Count()-1].x, (float)line_polyline[line_polyline.Count()-1].y, 
+                            g.DrawLine(new Pen(Color.Black, 2), (float)line_polyline[line_polyline.Count() - 1].x, (float)line_polyline[line_polyline.Count() - 1].y,
                                 (float)line_polyline[line_polyline.Count() - 2].x, (float)line_polyline[line_polyline.Count() - 2].y);
                         }
                     }
@@ -1090,9 +1125,9 @@ namespace lab6_a
         {
             if (textBoxNumbSplit.Text.Length == 0)
                 return;
-            
+
             int split = Convert.ToInt32(textBoxNumbSplit.Text);
-            
+
             CreateRotation(split);
 
             peremalui();
@@ -1103,7 +1138,7 @@ namespace lab6_a
             matrixTranslation[3, 0] = -line_axis[0].x;
             matrixTranslation[3, 1] = -line_axis[0].y;
             matrixTranslation[3, 2] = -line_axis[0].z;
-            for(int i = 0; i < line_polyline.Count; i++)
+            for (int i = 0; i < line_polyline.Count; i++)
             {
                 double[,] matrixPoint = new double[1, 4] { { line_polyline[i].x, line_polyline[i].y, line_polyline[i].z, 1.0 } };
 
@@ -1114,7 +1149,7 @@ namespace lab6_a
 
 
         }
-        
+
         public void slidepolyline()
         {
 
@@ -1122,7 +1157,7 @@ namespace lab6_a
             matrixTranslation[3, 1] = line_axis[0].y;
             matrixTranslation[3, 2] = line_axis[0].z;
 
-            for(int i = 0; i < list_points.Count; i++)
+            for (int i = 0; i < list_points.Count; i++)
             {
                 double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
 
@@ -1142,7 +1177,7 @@ namespace lab6_a
             double angle = 360.0 / split;
             for (int i = 1; i < split; i++)
             {
-                 buf.AddRange(MakeOneRotation(angle*i * Math.PI / 180.0));
+                buf.AddRange(MakeOneRotation(angle * i * Math.PI / 180.0));
             }
             list_points.AddRange(buf);
             list_points.AddRange(line_polyline);
@@ -1150,7 +1185,7 @@ namespace lab6_a
             for (int i = 0; i < buf.Count() / numb_vert; i++)
             {
                 int it1 = (numb_vert * i);
-                int it2 = (numb_vert * (i+1));
+                int it2 = (numb_vert * (i + 1));
 
 
                 for (int j = 0; j < numb_vert - 1; j++)
@@ -1216,7 +1251,7 @@ namespace lab6_a
 
             foreach (var p in list_points)
             {
-                s.AppendLine( "v " + p.x + " " + p.y + " " + p.z );
+                s.AppendLine("v " + p.x + " " + p.y + " " + p.z);
             }
 
             foreach (var p in list_pols)
@@ -1226,7 +1261,7 @@ namespace lab6_a
                 {
                     s.Append((it.a + 1) + " ");
                 }
-                s.AppendLine( );
+                s.AppendLine();
             }
 
             return s.ToString();
@@ -1316,8 +1351,8 @@ namespace lab6_a
 
         private void drawfunction(Func<double, double, double> f)
         {
-            double xmin = Convert.ToDouble(textBox15.Text.Replace( '.',','));
-            double xmax = Convert.ToDouble(textBox16.Text.Replace('.', ',' ));
+            double xmin = Convert.ToDouble(textBox15.Text.Replace('.', ','));
+            double xmax = Convert.ToDouble(textBox16.Text.Replace('.', ','));
             double ymin = Convert.ToDouble(textBox17.Text.Replace('.', ','));
             double ymax = Convert.ToDouble(textBox18.Text.Replace('.', ','));
 
@@ -1325,8 +1360,8 @@ namespace lab6_a
             double hx = (xmax - xmin) / n;
             double hy = (ymax - ymin) / n;
 
-            for (int i = 0; i < n; i++) 
-            { 
+            for (int i = 0; i < n; i++)
+            {
                 for (int j = 0; j < n; j++)
                 {
                     PointD p = new PointD(xmin + i * hx, ymin + j * hy, f(xmin + i * hx, ymin + j * hy));
@@ -1356,10 +1391,10 @@ namespace lab6_a
 
 
         }
-        
+
         static public bool ononeside(Vector n, double D, PointD center, PointD p)
         {
-            return ((p.x+ n.x ) * n.x + (p.y+n.y) * n.y +  (p.z + n.z) * n.z + D) * (n.x*center.x + n.y * center.y + n.z * center.z + D) > 0  ;
+            return ((p.x + n.x) * n.x + (p.y + n.y) * n.y + (p.z + n.z) * n.z + D) * (n.x * center.x + n.y * center.y + n.z * center.z + D) > 0;
         }
 
         private void deleteinvisible_Click(object sender, EventArgs e)
@@ -1372,7 +1407,7 @@ namespace lab6_a
                 c /= Math.Sqrt(Math.Pow(p.normal.x, 2) + Math.Pow(p.normal.y, 2) + Math.Pow(p.normal.z, 2)) * Math.Sqrt(Math.Pow(viev.x, 2) + Math.Pow(viev.y, 2) + Math.Pow(viev.z, 2));
 
                 double arc = Math.Acos(c);
-                if (arc*180/Math.PI > 90)
+                if (arc * 180 / Math.PI > 90)
                 {
                     //list_pols[i].isvisible = false;
                     for (int j = 0; j < list_pols[i].lines.Count; j++)
@@ -1388,7 +1423,7 @@ namespace lab6_a
 
         public void returnvisible()
         {
-            for(int i = 0; i< list_lines.Count; i++)
+            for (int i = 0; i < list_lines.Count; i++)
             {
                 list_lines[i].isvisible = true;
             }
@@ -1407,7 +1442,7 @@ namespace lab6_a
             currentRotate[0, 2] = -Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 0] = Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
-            for (int it = 0; it < 360; it += (int)teta) { 
+            for (int it = 0; it < 360; it += (int)teta) {
                 for (int i = 0; i < list_points.Count; i++)
                 {
                     double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
@@ -1427,5 +1462,180 @@ namespace lab6_a
             }
 
         }
+
+
+
+        private void buttonZbuffer_Click(object sender, EventArgs e)
+        {
+            applyZbuffer();
+        }
+
+        /*
+         
+        for each pixel in polygon:
+ if (pixel z < buffer z) then
+ buffer z = pixel z
+ fill pixel in raster 
+         */
+
+
+
+       
+        private List<Color> get_colors(int pol)
+        {
+            List<Color> list_colors = new List<Color>();
+
+            for (int i = 0; i < 255; i += 255/pol)
+            {
+                list_colors.Add(Color.FromArgb(i, i, i));
+            }
+
+            return list_colors;
+        }
+
+        public static List<int> interpolate(int x1, int y1, int x2, int y2)
+        {
+            List<int> res = new List<int>();
+            if (x1 == x2)
+            {
+                res.Add(y2);
+            }
+            double step = (y2 - y1) * 1.0f / (x2 - x1);//с таким шагом будем получать новые точки
+            double y = y1;
+            for (int i = x1; i <= x2; i++)
+            {
+                res.Add((int)y);
+                y += step;
+            }
+            return res;
+        }
+
+        public static List<PointD> Raster(List<PointD> points)
+        {
+            List<PointD> res = new List<PointD>();
+
+            //отсортировать точки по неубыванию ординаты
+            points.Sort((p1, p2) => p1.y.CompareTo(p2.y));
+
+            // "рабочие точки"
+            // изначально они находятся в верхней точке
+            var wpoints = points.Select((p) => (x: (int)p.x, y: (int)p.y, z: (int)p.z)).ToList();
+
+            var xy01 = interpolate(wpoints[0].y, wpoints[0].x, wpoints[1].y, wpoints[1].x);
+            var xy12 = interpolate(wpoints[1].y, wpoints[1].x, wpoints[2].y, wpoints[2].x);
+            var xy02 = interpolate(wpoints[0].y, wpoints[0].x, wpoints[2].y, wpoints[2].x);
+            var yz01 = interpolate(wpoints[0].y, wpoints[0].z, wpoints[1].y, wpoints[1].z);
+            var yz12 = interpolate(wpoints[1].y, wpoints[1].z, wpoints[2].y, wpoints[2].z);
+            var yz02 = interpolate(wpoints[0].y, wpoints[0].z, wpoints[2].y, wpoints[2].z);
+
+            xy01.RemoveAt(xy01.Count() - 1);//убрать точку, чтобы не было повтора
+            var xy = xy01;
+            xy.AddRange(xy12);
+
+            yz01.RemoveAt(yz01.Count() - 1);
+            var yz = yz01;
+            yz.AddRange(yz12);
+
+            //когда растеризуем, треугольник делим надвое
+            //ищем координаты, чтобы разделить треугольник на 2
+            int center = xy.Count() / 2;
+            List<int> lx, rx, lz, rz;//для приращений
+            if (xy02[center] < xy[center])
+            {
+                lx = xy02;
+                lz = yz02;
+                rx = xy;
+                rz = yz;
+            }
+            else
+            {
+                lx = xy;
+                lz = yz;
+                rx = xy02;
+                rz = yz02;
+            }
+
+            int y0 = wpoints[0].y;
+            int y2 = wpoints[2].y;
+
+            for (int i = 0; i <= y2 - y0; i++)
+            {
+                int leftx = lx[i];
+                int rightx = rx[i];
+                List<int> zcurr = interpolate(leftx, lz[i], rightx, rz[i]);
+                for (int j = leftx; j < rightx; j++)
+                {
+                    res.Add(new PointD(j, y0 + i, zcurr[j - leftx]));
+                }
+            }
+
+            return res;
+        }
+
+        public static List<List<PointD>> Triangulate(List<PointD> points) //triangulation
+        {
+            List<List<PointD>> res = new List<List<PointD>>();
+
+            if (points.Count == 3)
+                res = new List<List<PointD>> { points };
+
+            for (int i = 2; i < points.Count(); i++)
+                res.Add(new List<PointD> { points[0], points[i - 1], points[i] });
+
+            return res;
+        }
+
+        public List<List<PointD>> RasterFigure()
+        {
+            List<List<PointD>> res = new List<List<PointD>>();
+
+            foreach (var polygon in polyhedra.polygons)//каждая грань-это многоугольник, который надо растеризовать
+            {
+                List<PointD> currentface = new List<PointD>();
+                List<PointD> points = new List<PointD>();
+
+                for (int i = 0; i < polygon.lines.Count(); i++)
+                {
+                    points.Add(list_points[polygon.lines[i].a]);
+                }
+
+                List<List<PointD>> triangles = Triangulate(points);
+
+                foreach (var triangle in triangles)
+                {
+                    currentface.AddRange(Raster(triangle));
+                }
+                res.Add(currentface);
+            }
+
+            return res;
+        }
+
+        private void applyZbuffer()
+        {
+            Bitmap img = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            List<Zbuf> zbuffer = new List<Zbuf>();
+
+            List<Color> list_colors = get_colors(polyhedra.polygons.Count());
+
+            for (int i = 0; i < pictureBox1.Width * pictureBox1.Height; i++)
+            {
+                zbuffer.Add(new Zbuf(0, pictureBox1.BackColor));
+            }
+
+            PointD cam = new PointD(10.0, 10.0, 0);
+
+            for (int i = 0; i < polyhedra.polygons.Count(); i++)
+            { 
+
+            
+            
+            
+            }
+
+
+
+        }
+
     }
 }
