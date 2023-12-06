@@ -1483,76 +1483,83 @@ namespace lab6_a
        
         private List<Color> get_colors(int pol)
         {
-            List<Color> list_colors = new List<Color>();
+            List<Color> colors = new List<Color>();
 
-            for (int i = 0; i < 255; i += 255/pol)
+            Random rand = new Random(256);
+
+            for (int i = 0; i < pol; i++)
             {
-                list_colors.Add(Color.FromArgb(i, i, i));
+                int r = rand.Next(0, 256);
+                int g = rand.Next(0, 256);
+                int b = rand.Next(0, 256);
+
+                colors.Add(Color.FromArgb(r, g, b));
             }
 
-            return list_colors;
+            return colors;
         }
 
-        public static List<int> interpolate(int x1, int y1, int x2, int y2)
+        public static List<int> interpolatePoints(int x0, int y0, int x1, int y1)
         {
             List<int> res = new List<int>();
-            if (x1 == x2)
-            {
-                res.Add(y2);
-            }
-            double step = (y2 - y1) * 1.0f / (x2 - x1);//с таким шагом будем получать новые точки
-            double y = y1;
-            for (int i = x1; i <= x2; i++)
+            if (x0 == x1)
+                res.Add(y1);
+            
+            double a = (y1 - y0) * 1.0f / (x1 - x0); //с таким шагом будем получать новые точки
+            double y = y0;
+            
+            for (int i = x0; i <= x1; i++)
             {
                 res.Add((int)y);
-                y += step;
+                y += a;
             }
+
             return res;
         }
 
-        public static List<PointD> Raster(List<PointD> points)
+        public static List<PointD> interpolateTriangle(List<PointD> points)
         {
             List<PointD> res = new List<PointD>();
-
-            //отсортировать точки по неубыванию ординаты
+            
             points.Sort((p1, p2) => p1.y.CompareTo(p2.y));
 
-            // "рабочие точки"
-            // изначально они находятся в верхней точке
             var wpoints = points.Select((p) => (x: (int)p.x, y: (int)p.y, z: (int)p.z)).ToList();
 
-            var xy01 = interpolate(wpoints[0].y, wpoints[0].x, wpoints[1].y, wpoints[1].x);
-            var xy12 = interpolate(wpoints[1].y, wpoints[1].x, wpoints[2].y, wpoints[2].x);
-            var xy02 = interpolate(wpoints[0].y, wpoints[0].x, wpoints[2].y, wpoints[2].x);
-            var yz01 = interpolate(wpoints[0].y, wpoints[0].z, wpoints[1].y, wpoints[1].z);
-            var yz12 = interpolate(wpoints[1].y, wpoints[1].z, wpoints[2].y, wpoints[2].z);
-            var yz02 = interpolate(wpoints[0].y, wpoints[0].z, wpoints[2].y, wpoints[2].z);
+            List<int> x01 = interpolatePoints(wpoints[0].y, wpoints[0].x, wpoints[1].y, wpoints[1].x);
+            List<int> x12 = interpolatePoints(wpoints[1].y, wpoints[1].x, wpoints[2].y, wpoints[2].x);
+            List<int> x02 = interpolatePoints(wpoints[0].y, wpoints[0].x, wpoints[2].y, wpoints[2].x);
 
-            xy01.RemoveAt(xy01.Count() - 1);//убрать точку, чтобы не было повтора
-            var xy = xy01;
-            xy.AddRange(xy12);
+            x01.RemoveAt(x01.Count() - 1);
+            var xy = x01;
+            xy.AddRange(x12);
 
-            yz01.RemoveAt(yz01.Count() - 1);
-            var yz = yz01;
-            yz.AddRange(yz12);
+            List<int> z01 = interpolatePoints(wpoints[0].y, wpoints[0].z, wpoints[1].y, wpoints[1].z);
+            List<int> z12 = interpolatePoints(wpoints[1].y, wpoints[1].z, wpoints[2].y, wpoints[2].z);
+            List<int> z02 = interpolatePoints(wpoints[0].y, wpoints[0].z, wpoints[2].y, wpoints[2].z);
 
-            //когда растеризуем, треугольник делим надвое
-            //ищем координаты, чтобы разделить треугольник на 2
-            int center = xy.Count() / 2;
-            List<int> lx, rx, lz, rz;//для приращений
-            if (xy02[center] < xy[center])
+            z01.RemoveAt(z01.Count() - 1);
+            var yz = z01;
+            yz.AddRange(z12);
+
+            //определяем какой массив правый, а какой левый
+            int middle = xy.Count() / 2;
+            List<int> x_left, x_right, z_left, z_right; 
+            
+            if (x02[middle] < xy[middle])
             {
-                lx = xy02;
-                lz = yz02;
-                rx = xy;
-                rz = yz;
+                x_left = x02;
+                x_right = xy;
+
+                z_left = z02;
+                z_right = yz;
             }
             else
             {
-                lx = xy;
-                lz = yz;
-                rx = xy02;
-                rz = yz02;
+                x_left = xy;
+                x_right = x02;
+
+                z_left = yz;
+                z_right = z02;
             }
 
             int y0 = wpoints[0].y;
@@ -1560,9 +1567,10 @@ namespace lab6_a
 
             for (int i = 0; i <= y2 - y0; i++)
             {
-                int leftx = lx[i];
-                int rightx = rx[i];
-                List<int> zcurr = interpolate(leftx, lz[i], rightx, rz[i]);
+                int leftx = x_left[i];
+                int rightx = x_right[i];
+                List<int> zcurr = interpolatePoints(leftx, z_left[i], rightx, z_right[i]);
+
                 for (int j = leftx; j < rightx; j++)
                 {
                     res.Add(new PointD(j, y0 + i, zcurr[j - leftx]));
@@ -1572,7 +1580,7 @@ namespace lab6_a
             return res;
         }
 
-        public static List<List<PointD>> Triangulate(List<PointD> points) //triangulation
+        public static List<List<PointD>> triangulation(List<PointD> points) 
         {
             List<List<PointD>> res = new List<List<PointD>>();
 
@@ -1599,11 +1607,11 @@ namespace lab6_a
                     points.Add(list_points[polygon.lines[i].a]);
                 }
 
-                List<List<PointD>> triangles = Triangulate(points);
+                List<List<PointD>> triangles = triangulation(points);
 
                 foreach (var triangle in triangles)
                 {
-                    currentface.AddRange(Raster(triangle));
+                    currentface.AddRange(interpolateTriangle(triangle));
                 }
                 res.Add(currentface);
             }
