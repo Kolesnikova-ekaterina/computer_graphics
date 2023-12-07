@@ -103,14 +103,8 @@ const char* FragShaderGradColor = R"(
     #version 330 core
     
     in vec3 frag_color;
-    in vec2 coord_tex;
 
     out vec4 color;
-
-    uniform float mix_value;
-    
-    uniform sampler2D texture1;
-    uniform sampler2D texture2;
 
     void main() 
     {
@@ -728,7 +722,7 @@ int main()
                 }
                 else if (event.key.code == sf::Keyboard::Up && type_prog == cube)
                 {
-                    mix_value += 0.01f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                    mix_value += 0.01f; 
                     if (mix_value >= 1.0f)
                         mix_value = 1.0f;
 
@@ -737,7 +731,7 @@ int main()
 
                 else if (event.key.code == sf::Keyboard::Down && type_prog == cube)
                 {
-                    mix_value -= 0.01f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                    mix_value -= 0.01f; 
                     if (mix_value <= 0.0f)
                         mix_value = 0.0f;
 
@@ -747,17 +741,17 @@ int main()
                 {
                     if (ax == OX)
                     {
-                        stepx += 0.1f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepx += 0.1f; 
                         
                     }
                     else if (ax == OY)
                     {
-                        stepy += 0.1f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepy += 0.1f; 
                         
                     }
                     else if (ax == OZ)
                     {
-                        stepz += 0.5f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepz += 0.5f; 
                         std::cout << stepz << std::endl;
                     }
                 }
@@ -766,17 +760,17 @@ int main()
                 {
                     if (ax == OX)
                     {
-                        stepx -= 0.1f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepx -= 0.1f; 
                         
                     }
                     else if (ax == OY)
                     {
-                        stepy -= 0.1f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepy -= 0.1f; 
                         
                     }
                     else if (ax == OZ)
                     {
-                        stepz -= 0.5f; // change this value accordingly (might be too slow or too fast based on system hardware)
+                        stepz -= 0.5f; 
                         std::cout << stepz << std::endl;
                     }
                 }
