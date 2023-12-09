@@ -73,6 +73,10 @@ namespace lab6_a
                 y = yy;
                 z = zz;
             }
+            public double dist(PointD otherpoint)
+            {
+                return Math.Sqrt(Math.Pow(x - otherpoint.x, 2) + Math.Pow(y - otherpoint.y, 2) + Math.Pow(z - otherpoint.z, 2));
+            }
         }
 
 
@@ -95,13 +99,15 @@ namespace lab6_a
 
             public List<Line> lines;
             public Vector normal;
-            public bool isvisible = true;
             public Polygon(List<Line> l)
             {
                 lines = l;
                 normal = null;
             }
-
+            public bool isvisible()
+            {
+                return lines[0].isvisible;
+            }
             public void findnormal(PointD center)
             {
                 double ax = list_points[lines[0].b].x - list_points[lines[0].a].x;
@@ -1619,6 +1625,35 @@ namespace lab6_a
             return res;
         }
 
+       public PointD getpointinperspective(PointD p)
+        {
+
+            double anglephi = -45.0 * Math.PI / 180.0;
+            double anglepsi = 35.26 * Math.PI / 180.0;
+            matrixAxonometric[0, 0] = Math.Cos(anglepsi);
+            matrixAxonometric[0, 1] = Math.Sin(anglephi) * Math.Sin(anglepsi);
+            matrixAxonometric[1, 1] = Math.Cos(anglephi);
+            matrixAxonometric[2, 0] = Math.Sin(anglepsi);
+            matrixAxonometric[2, 1] = -Math.Cos(anglepsi) * Math.Sin(anglephi);
+
+            double[,] matrixPoint = new double[1, 4] { { p.x, p.y, p.z, 1.0 } };
+            double[,] res = new double[0,3];
+
+            if (comboBoxTypeProection.SelectedIndex == 3)
+                res = multipleMatrix(matrixPoint, matrixAxonometric);
+            else
+            {
+                res = (multipleMatrix(matrixPoint, matrixPerspectieve));
+                double c = 10.0;
+                res[0, 0] /= 1.0 - res[0, 3] / c;
+                res[0, 1] /= 1.0 - res[0, 3] / c;
+            }
+
+            return new PointD(res[0, 0], res[0, 1], res[0, 2]);
+
+
+        }
+
         private void applyZbuffer()
         {
             Bitmap img = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -1631,17 +1666,55 @@ namespace lab6_a
                 zbuffer.Add(new Zbuf(0, pictureBox1.BackColor));
             }
 
-            PointD cam = new PointD(10.0, 10.0, 0);
+            PointD cam = new PointD(1000.0, 1000.0, 1000.0);
+            var polys = RasterFigure();
 
-            for (int i = 0; i < polyhedra.polygons.Count(); i++)
-            { 
-
-            
-            
-            
+            var depth = new double[pictureBox1.Width][];
+            for (int i = 0; i<depth.Count(); i++)
+            {
+                depth[i] = new double[pictureBox1.Height];
+                for(int j =0; j< depth[i].Count(); j++)
+                {
+                    depth[i][j] = double.MaxValue;
+                }
             }
 
+            /*
 
+            for each pixel in polygon:
+     if (pixel z < buffer z) then
+     buffer z = pixel z
+     fill pixel in raster 
+             */
+
+            var g = Graphics.FromHwnd(pictureBox1.Handle);
+           // g.DrawLine()
+            for (int i = 0; i < polys.Count(); i++)
+            {
+                if (!polyhedra.polygons[i].isvisible())
+                    continue;
+                GraphicsPath gp = new GraphicsPath();
+                for (int j =0; j< polys[i].Count; j++)
+                {
+                    PointD pointinviev = getpointinperspective(polys[i][j]);
+                    if (pointinviev.x < 0 || pointinviev.x > pictureBox1.Width)
+                        continue;
+
+                    if (pointinviev.y < 0 || pointinviev.y > pictureBox1.Height)
+                        continue;
+
+                    if (cam.dist(polys[i][j]) < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
+                    {
+                        depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)] = cam.dist(polys[i][j]);
+                        g.FillRectangle(new SolidBrush(list_colors[i]), (float)pointinviev.x, (float)pointinviev.y, 4.0f, 4.0f);
+                        //gp.AddRectangle(new Rectangle((int)pointinviev.x, (int)pointinviev.y, 4, 4));
+                        
+                        //img.SetPixel((int)Math.Round(pointinviev.x), (int)Math.Round(pointinviev.y), list_colors[i]);
+                    }
+                }
+              //g.DrawPath(new Pen(list_colors[i]),gp);
+            }
+            //pictureBox1.Image = img;
 
         }
 
