@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,6 +26,8 @@ namespace lab6_a
         bool draw_axis = false;
         bool draw_polyline = false;
         int numb_vert = 0;
+        Graphics g;
+        Camera camera;
         public Form1()
         {
             InitializeComponent();
@@ -36,8 +37,10 @@ namespace lab6_a
 
             line_axis = new List<PointD>();
             line_polyline = new List<PointD>();
-
+            g = Graphics.FromHwnd(pictureBox1.Handle);
             //Cube();
+            
+            camera = new Camera();
 
         }
 
@@ -59,23 +62,14 @@ namespace lab6_a
                 y *= -1;
                 z *= -1;
             }
-        }
-
-        public class PointD
-        {
-            public double x;
-            public double y;
-            public double z;
-
-            public PointD(double xx, double yy, double zz)
+            public void Normalize ()
             {
-                x = xx;
-                y = yy;
-                z = zz;
-            }
-            public double dist(PointD otherpoint)
-            {
-                return Math.Sqrt(Math.Pow(x - otherpoint.x, 2) + Math.Pow(y - otherpoint.y, 2) + Math.Pow(z - otherpoint.z, 2));
+                var sum = (x + y + z) ;
+                if (Math.Abs(sum) < double.Epsilon)
+                    return;
+                x /= sum;
+                y /= sum;
+                z /= sum;
             }
         }
 
@@ -160,23 +154,7 @@ namespace lab6_a
             }
         }
 
-        public class Camera
-        {
-            double x;
-            double y;
-            double z;
-            Vector view;
-
-            public Camera(double xx, double yy, double zz, Vector v)
-            {
-                x = xx;
-                y = yy;
-                z = zz;
-                view = v;
-            }
-
-
-        }
+       
 
         public class Zbuf
         {
@@ -210,13 +188,13 @@ namespace lab6_a
 
         double[,] matrixAxonometric = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
 
-        double[,] matrixPerspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -0.1 }, { 0, 0, 0, 1 } };
+        
 
         double[,] matrixMirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
         double[,] matrixView = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
-        double[,] multipleMatrix(double[,] a, double[,] b)
+        public static double[,] multipleMatrix(double[,] a, double[,] b)
         {
             if (a.GetLength(1) != b.GetLength(0)) throw new Exception("Матрицы нельзя перемножить");
             double[,] r = new double[a.GetLength(0), b.GetLength(1)];
@@ -315,7 +293,7 @@ namespace lab6_a
 
 
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
 
             for (int i = 0; i < list_points.Count(); i++)
             {
@@ -337,14 +315,6 @@ namespace lab6_a
                 g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
 
             }
-
-
-
-
-
-
-
-
         }
 
 
@@ -381,7 +351,7 @@ namespace lab6_a
 
             polyhedra = new Polyhedra(list_pols);
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
 
             for (int i = 0; i < list_lines.Count(); i++)
             {
@@ -449,7 +419,7 @@ namespace lab6_a
 
             list_pols.Clear();
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
             for (int i = 0; i < list_lines.Count(); i += 3)
             {
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
@@ -538,7 +508,7 @@ namespace lab6_a
 
             polyhedra = new Polyhedra(list_pols);
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 100;
@@ -626,7 +596,7 @@ namespace lab6_a
             }
 
             polyhedra = new Polyhedra(list_pols);
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 5;
@@ -654,7 +624,7 @@ namespace lab6_a
             //if (comboBoxTypeProection.SelectedIndex == -1)
             // return;
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
 
             switch (comboBoxTypeProection.SelectedIndex)
             {
@@ -718,41 +688,16 @@ namespace lab6_a
                 case 4:
                     {
                         pictureBox1.Refresh();
-                        parallperpective();
+                        camera.Perspective(g, list_points, list_lines, new Vector(pictureBox1.Width, pictureBox1.Height, 1));
                         break;
                     }
-
-
-
             }
 
 
 
 
         }
-        public void parallperpective()
-        {
-            var newimage = new List<PointD>();
-            for (int i = 0; i < list_points.Count; i++)
-            {
-                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
-
-                var res = (multipleMatrix(matrixPoint, matrixPerspectieve));
-                double c = 10.0;
-                res[0, 0] /= 1.0 - res[0, 3] / c;
-                res[0, 1] /= 1.0 - res[0, 3] / c;
-                newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
-            }
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
-            for (int i = 0; i < list_lines.Count(); i++)
-            {
-                Point a = new Point((int)(newimage[list_lines[i].a].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].a].y) + pictureBox1.Height / 3);
-                Point b = new Point((int)(newimage[list_lines[i].b].x) + pictureBox1.Width / 3, (int)(newimage[list_lines[i].b].y) + pictureBox1.Height / 3);
-
-                g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
-
-            }
-        }
+    
         private void axonometric()
         {
             double anglephi = -45.0 * Math.PI / 180.0;
@@ -772,7 +717,7 @@ namespace lab6_a
 
                 newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
             }
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
             for (int i = 0; i < list_lines.Count(); i++)
             {
                 if (!list_lines[i].isvisible)
@@ -786,7 +731,7 @@ namespace lab6_a
         }
         private void buttonTranslite_Click(object sender, EventArgs e)
         {
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
             //                                                                                                   x  y  z
             //double[,] matrixTranslation = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 1, 1, 1, 1 } };
             matrixTranslation[3, 0] = Convert.ToDouble(textBox1.Text);
@@ -1062,7 +1007,7 @@ namespace lab6_a
         {
             if (is_draw)
             {
-                var g = Graphics.FromHwnd(pictureBox1.Handle);
+                 
 
                 if (draw_axis)
                 {
@@ -1638,12 +1583,13 @@ namespace lab6_a
 
             double[,] matrixPoint = new double[1, 4] { { p.x, p.y, p.z, 1.0 } };
             double[,] res = new double[0,3];
+           // Camera camera = new Camera(new PointD(0, 0, 0), new Vector(0, 0, 1));
 
             if (comboBoxTypeProection.SelectedIndex == 3)
                 res = multipleMatrix(matrixPoint, matrixAxonometric);
             else
             {
-                res = (multipleMatrix(matrixPoint, matrixPerspectieve));
+                res = (multipleMatrix(matrixPoint, camera.matrixPerspectieve));
                 double c = 10.0;
                 res[0, 0] /= 1.0 - res[0, 3] / c;
                 res[0, 1] /= 1.0 - res[0, 3] / c;
@@ -1687,7 +1633,7 @@ namespace lab6_a
      fill pixel in raster 
              */
 
-            var g = Graphics.FromHwnd(pictureBox1.Handle);
+             
            // g.DrawLine()
             for (int i = 0; i < polys.Count(); i++)
             {
@@ -1718,5 +1664,39 @@ namespace lab6_a
 
         }
 
+        private void Left(object sender, EventArgs e)
+        {
+            camera.RotateLeft();
+            peremalui();
+        }
+
+        private void Right(object sender, EventArgs e)
+        {
+            camera.RotateRight();
+            peremalui();
+        }
+
+        private void Up(object sender, EventArgs e)
+        {
+            camera.RotateUp();
+            peremalui();
+        }
+
+        private void Down(object sender, EventArgs e)
+        {
+          camera.RotateDown();
+          peremalui();
+        }
+
+        private void buttonCamera_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            camera.RefreshPos();
+            peremalui();
+        }
     }
 }
