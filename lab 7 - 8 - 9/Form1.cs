@@ -19,7 +19,7 @@ namespace lab6_a
         static List<PointD> list_points;
         List<Line> list_lines;
         List<Polygon> list_pols;
-        Polyhedra polyhedra;
+        List<Polyhedra> polyhedra;
         List<PointD> line_axis;
         List<PointD> line_polyline;
         bool is_draw = false;
@@ -34,7 +34,7 @@ namespace lab6_a
             list_points = new List<PointD>();
             list_lines = new List<Line>();
             list_pols = new List<Polygon>();
-
+            polyhedra = new List<Polyhedra>();
             line_axis = new List<PointD>();
             line_polyline = new List<PointD>();
             g = Graphics.FromHwnd(pictureBox1.Handle);
@@ -215,6 +215,9 @@ namespace lab6_a
 
         private void comboBoxTypePolyhedra_SelectedIndexChanged(object sender, EventArgs e)
         {
+            zb = false;
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Refresh();
             /*  куб 
                 тетраэдр
                 октаэдрт
@@ -288,8 +291,8 @@ namespace lab6_a
             {
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2], list_lines[i + 3] }));
             }
-
-            polyhedra = new Polyhedra(list_pols);
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
 
 
 
@@ -349,9 +352,11 @@ namespace lab6_a
             }
 
 
-            polyhedra = new Polyhedra(list_pols);
 
-             
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
+
+
 
             for (int i = 0; i < list_lines.Count(); i++)
             {
@@ -431,7 +436,10 @@ namespace lab6_a
                 list_points[i].y *= 2;
                 list_points[i].z *= 2;
             }*/
-            polyhedra = new Polyhedra(list_pols);
+
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
+
             for (int i = 0; i < list_lines.Count(); i++)
             {
                 Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].y));
@@ -506,9 +514,11 @@ namespace lab6_a
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
             }
 
-            polyhedra = new Polyhedra(list_pols);
 
-             
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
+
+
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 100;
@@ -595,8 +605,10 @@ namespace lab6_a
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2], list_lines[i + 3], list_lines[i + 4] }));
             }
 
-            polyhedra = new Polyhedra(list_pols);
-             
+
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
+
             for (int i = 0; i < list_points.Count(); i++)
             {
                 list_points[i].x *= 5;
@@ -624,7 +636,8 @@ namespace lab6_a
             //if (comboBoxTypeProection.SelectedIndex == -1)
             // return;
 
-             
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Refresh();
 
             switch (comboBoxTypeProection.SelectedIndex)
             {
@@ -747,11 +760,17 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
-            peremalui();
+            if (zb) 
+                applyZbuffer();
+            else
+                peremalui();
         }
 
         private void comboBoxTypeProection_SelectedIndexChanged(object sender, EventArgs e)
         {
+            zb = false;
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Refresh();
             peremalui();
         }
 
@@ -791,8 +810,10 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
-            peremalui();
-
+            if (zb)
+                applyZbuffer();
+            else
+                peremalui();
 
         }
 
@@ -815,8 +836,12 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
-            peremalui();
+            polyhedra[0].findcenter();
 
+            if (zb)
+                applyZbuffer();
+            else
+                peremalui();
         }
 
         private void buttonRotate_Click(object sender, EventArgs e)
@@ -860,7 +885,10 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
-            peremalui();
+            if (zb)
+                applyZbuffer();
+            else
+                peremalui();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -903,7 +931,10 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
-            peremalui();
+            if (zb)
+                applyZbuffer();
+            else
+                peremalui();
 
         }
 
@@ -970,8 +1001,10 @@ namespace lab6_a
 
                 }
 
-                polyhedra = new Polyhedra(list_pols);
+
             }
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
         }
 
         private void buttonFigureRotation_Click(object sender, EventArgs e)
@@ -1154,7 +1187,9 @@ namespace lab6_a
 
 
             }
-            polyhedra = new Polyhedra(list_pols);
+
+            polyhedra.Clear();
+            polyhedra.Add(new Polyhedra(list_pols));
 
             slidepolyline();
 
@@ -1348,9 +1383,31 @@ namespace lab6_a
             return ((p.x + n.x) * n.x + (p.y + n.y) * n.y + (p.z + n.z) * n.z + D) * (n.x * center.x + n.y * center.y + n.z * center.z + D) > 0;
         }
 
+        public PointD centerScene()
+        {
+            PointD res = new PointD(0, 0, 0);
+            foreach (var p in polyhedra)
+            {
+                res.x += p.center.x;
+                res.y += p.center.y;
+                res.z += p.center.z;
+            }
+            res.x /= polyhedra.Count;
+            res.y /= polyhedra.Count;
+            res.z /= polyhedra.Count;
+
+            return res;
+        }
+
         private void deleteinvisible_Click(object sender, EventArgs e)
         {
-            Vector viev = new Vector(-1, -1.05, 1);
+            // returnvisible();
+            PointD centr = centerScene();
+            Vector viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+            //Vector viev = camera.view;
+            //viev.reverse();
+            if (comboBoxTypeProection.SelectedIndex == 3)
+                 viev = new Vector(-1, -1.05, 1);
             int i = 0;
             foreach (var p in list_pols)
             {
@@ -1403,7 +1460,7 @@ namespace lab6_a
                     list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
                 }
 
-                polyhedra.findcenter();
+                polyhedra[0].findcenter();
                 System.Threading.Thread.Sleep(100);
                 returnvisible();
                 deleteinvisible_Click(sender, e);
@@ -1547,26 +1604,26 @@ namespace lab6_a
         public List<List<PointD>> RasterFigure()
         {
             List<List<PointD>> res = new List<List<PointD>>();
-
-            foreach (var polygon in polyhedra.polygons)//каждая грань-это многоугольник, который надо растеризовать
-            {
-                List<PointD> currentface = new List<PointD>();
-                List<PointD> points = new List<PointD>();
-
-                for (int i = 0; i < polygon.lines.Count(); i++)
+            foreach (var polyg in polyhedra) { 
+                foreach (var polygon in polyg.polygons)//каждая грань-это многоугольник, который надо растеризовать
                 {
-                    points.Add(list_points[polygon.lines[i].a]);
-                }
+                    List<PointD> currentface = new List<PointD>();
+                    List<PointD> points = new List<PointD>();
 
-                List<List<PointD>> triangles = triangulation(points);
+                    for (int i = 0; i < polygon.lines.Count(); i++)
+                    {
+                        points.Add(list_points[polygon.lines[i].a]);
+                    }
 
-                foreach (var triangle in triangles)
-                {
-                    currentface.AddRange(interpolateTriangle(triangle));
+                    List<List<PointD>> triangles = triangulation(points);
+
+                    foreach (var triangle in triangles)
+                    {
+                        currentface.AddRange(interpolateTriangle(triangle));
+                    }
+                    res.Add(currentface);
                 }
-                res.Add(currentface);
             }
-
             return res;
         }
 
@@ -1599,20 +1656,21 @@ namespace lab6_a
 
 
         }
-
+        bool zb = false;
         private void applyZbuffer()
         {
+            zb = true;
+            pictureBox1.Refresh();
             Bitmap img = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             List<Zbuf> zbuffer = new List<Zbuf>();
-
-            List<Color> list_colors = get_colors(polyhedra.polygons.Count());
+            List<Color> list_colors = get_colors(polyhedra.Sum(x => x.polygons.Count));
 
             for (int i = 0; i < pictureBox1.Width * pictureBox1.Height; i++)
             {
                 zbuffer.Add(new Zbuf(0, pictureBox1.BackColor));
             }
 
-            PointD cam = new PointD(1000.0, 1000.0, 1000.0);
+            PointD cam = camera.position;
             var polys = RasterFigure();
 
             var depth = new double[pictureBox1.Width][];
@@ -1637,7 +1695,7 @@ namespace lab6_a
            // g.DrawLine()
             for (int i = 0; i < polys.Count(); i++)
             {
-                if (!polyhedra.polygons[i].isvisible())
+                if (!polyhedra[0].polygons[i].isvisible())
                     continue;
                 GraphicsPath gp = new GraphicsPath();
                 for (int j =0; j< polys[i].Count; j++)
@@ -1649,18 +1707,20 @@ namespace lab6_a
                     if (pointinviev.y < 0 || pointinviev.y > pictureBox1.Height)
                         continue;
 
-                    if (cam.dist(polys[i][j]) < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
+                    // if (cam.dist(polys[i][j]) < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
+                    if (polys[i][j].z < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
                     {
-                        depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)] = cam.dist(polys[i][j]);
-                        g.FillRectangle(new SolidBrush(list_colors[i]), (float)pointinviev.x, (float)pointinviev.y, 4.0f, 4.0f);
+                        //depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)] = cam.dist(polys[i][j]);
+                        depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)] = polys[i][j].z;
+                        //g.FillRectangle(new SolidBrush(list_colors[i]), (float)pointinviev.x, (float)pointinviev.y, 4.0f, 4.0f);
                         //gp.AddRectangle(new Rectangle((int)pointinviev.x, (int)pointinviev.y, 4, 4));
-                        
-                        //img.SetPixel((int)Math.Round(pointinviev.x), (int)Math.Round(pointinviev.y), list_colors[i]);
+
+                        img.SetPixel((int)Math.Round(pointinviev.x), (int)Math.Round(pointinviev.y), list_colors[i]);
                     }
                 }
               //g.DrawPath(new Pen(list_colors[i]),gp);
             }
-            //pictureBox1.Image = img;
+           pictureBox1.Image = img;
 
         }
 

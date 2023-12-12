@@ -12,7 +12,7 @@ namespace lab6_a
     public class Camera
     {
         public PointD position;
-        Vector view;
+        public Vector view;
         public double[,] matrixPerspectieve = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, -1f / -200 }, { 0, 0, 0, 1 } };
         double[,] matrixToCamera = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         static float teta = (float)(5 * Math.PI / 180.0);
@@ -39,10 +39,11 @@ namespace lab6_a
 
             for (int i = 0; i < list_lines.Count(); i++)
             {
+                if (!list_lines[i].isvisible)
+                    continue;
                 Point a = new Point((int)(newimage[list_lines[i].a].x) + (int)shift.y / 3, (int)(newimage[list_lines[i].a].y) + (int)shift.x / 3);
                 Point b = new Point((int)(newimage[list_lines[i].b].x) + (int)shift.y / 3, (int)(newimage[list_lines[i].b].y) + (int)shift.x / 3);
                 g.DrawLine(new Pen(Color.Black, 2.0f), a, b);
-
             }
         }
 
