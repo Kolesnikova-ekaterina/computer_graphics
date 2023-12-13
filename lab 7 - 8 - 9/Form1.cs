@@ -1469,11 +1469,18 @@ namespace lab6_a
             invisible = true ;
             // returnvisible();
             PointD centr = centerScene();
-            Vector viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+
+            if (!vievstand)
+            {
+                vievstand = true;
+                viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+            }
+            //viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+            //Vector viev = new Vector(camera.position.x - centr.x, camera.position.y - centr.y, camera.position.z - centr.z);
             //Vector viev = camera.view;
             //viev.reverse();
-            if (comboBoxTypeProection.SelectedIndex == 3)
-                 viev = new Vector(-1, -1.05, 1);
+            //if (comboBoxTypeProection.SelectedIndex == 3)
+            //    viev = new Vector(-1, -1.05, 1);
             int i = 0;
             foreach (var p in list_pols)
             {
@@ -1508,16 +1515,23 @@ namespace lab6_a
             returnvisible();
             peremalui();
         }
-
+        Vector viev;
+        bool vievstand = false;
         private void dancetime_Click(object sender, EventArgs e)
         {
             double teta = 5;
+            PointD centr = centerScene();
+            if (!vievstand) {
+                vievstand = true;
+                viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+            }
             currentRotate = matrixRotateY;
             currentRotate[0, 0] = Math.Cos(teta * Math.PI / 180.0);
             currentRotate[0, 2] = -Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 0] = Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
             for (int it = 0; it < 360; it += (int)teta) {
+                /*
                 for (int i = 0; i < list_points.Count; i++)
                 {
                     double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
@@ -1527,7 +1541,11 @@ namespace lab6_a
                     list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
                 }
 
-                polyhedra[0].findcenter();
+                polyhedra[0].findcenter();*/
+                double[,] matrixPoint = new double[1, 4] { { viev.x, viev.y, viev.z, 1.0 } }; 
+                var res = (multipleMatrix(matrixPoint, currentRotate));
+
+                viev = new Vector(res[0, 0], res[0, 1], res[0, 2]);
                 System.Threading.Thread.Sleep(100);
                 returnvisible();
                 deleteinvisible_Click(sender, e);
@@ -1737,7 +1755,7 @@ namespace lab6_a
                 zbuffer.Add(new Zbuf(0, pictureBox1.BackColor));
             }
 
-            PointD cam = camera.position;
+            PointD cam = new PointD(0, 0, 1000);// camera.position;
             var polys = RasterFigure();
 
             var depth = new double[pictureBox1.Width][];
@@ -1768,10 +1786,10 @@ namespace lab6_a
                 for (int j =0; j< polys[i].Count; j++)
                 {
                     PointD pointinviev = getpointinperspective(polys[i][j]);
-                    if (pointinviev.x < 0 || pointinviev.x > pictureBox1.Width)
+                    if (pointinviev.x < 0 || pointinviev.x >= pictureBox1.Width-1)
                         continue;
 
-                    if (pointinviev.y < 0 || pointinviev.y > pictureBox1.Height)
+                    if (pointinviev.y < 0 || pointinviev.y >= pictureBox1.Height-1)
                         continue;
 
                     // if (cam.dist(polys[i][j]) < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
@@ -1824,6 +1842,23 @@ namespace lab6_a
         {
             camera.RefreshPos();
             peremalui();
+        }
+
+        private void textBoxx_TextChanged(object sender, EventArgs e)
+        {
+            vievstand = false;
+        }
+
+        private void textBoxy_TextChanged(object sender, EventArgs e)
+        {
+
+            vievstand = false;
+        }
+
+        private void textBoxz_TextChanged(object sender, EventArgs e)
+        {
+
+            vievstand = false;
         }
     }
 }
