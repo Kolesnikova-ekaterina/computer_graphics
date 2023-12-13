@@ -760,6 +760,19 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
+            if (invisible)
+            {
+                polyhedra[0].findcenter();
+                //polyhedra[0].
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+                {
+                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+                }
+                //System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+                //return ;
+            }
             if (zb) 
                 applyZbuffer();
             else
@@ -810,6 +823,19 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
+            if (invisible)
+            {
+                polyhedra[0].findcenter();
+                //polyhedra[0].
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+                {
+                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+                }
+                //System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+                //return ;
+            }
             if (zb)
                 applyZbuffer();
             else
@@ -838,6 +864,19 @@ namespace lab6_a
 
             polyhedra[0].findcenter();
 
+            if (invisible)
+            {
+                polyhedra[0].findcenter();
+                //polyhedra[0].
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+                {
+                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+                }
+                //System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+                //return ;
+            }
             if (zb)
                 applyZbuffer();
             else
@@ -884,6 +923,20 @@ namespace lab6_a
 
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
+            if (invisible)
+            {
+                polyhedra[0].findcenter();
+                //polyhedra[0].
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+                {
+                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+                }
+                //System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+                //return ;
+            }
+
 
             if (zb)
                 applyZbuffer();
@@ -931,6 +984,18 @@ namespace lab6_a
                 list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
             }
 
+            if (invisible)
+            {
+                polyhedra[0].findcenter();
+                //polyhedra[0].
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++){
+                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+                }
+                //System.Threading.Thread.Sleep(100);
+                returnvisible();
+                deleteinvisible_Click(sender, e);
+                //return ;
+            }
             if (zb)
                 applyZbuffer();
             else
@@ -1398,9 +1463,10 @@ namespace lab6_a
 
             return res;
         }
-
+        private bool invisible = false;
         private void deleteinvisible_Click(object sender, EventArgs e)
         {
+            invisible = true ;
             // returnvisible();
             PointD centr = centerScene();
             Vector viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
@@ -1431,6 +1497,7 @@ namespace lab6_a
 
         public void returnvisible()
         {
+            invisible = false;
             for (int i = 0; i < list_lines.Count; i++)
             {
                 list_lines[i].isvisible = true;
