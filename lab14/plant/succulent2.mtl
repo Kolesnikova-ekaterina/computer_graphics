@@ -1,0 +1,34 @@
+# Blender 3.6.2 MTL File: 'None'
+# www.blender.org
+
+newmtl PearCactus
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd PearCactus_Diffuse.png
+map_Ns PearCactus_Roughness.png
+map_d PearCactus_Diffuse.png
+map_Bump -bm 1.000000 PearCactus_Normal.png
+
+newmtl PearCactusFruit
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd PearCactusFruit_Diffuse.png
+map_Ns PearCactusFruit_Roughness.png
+map_d PearCactusFruit_Diffuse.png
+map_Bump -bm 1.000000 PearCactusFruit_Normal.png
+
+newmtl Spires
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Spires_Diffuse.png
+map_d Spires_Diffuse.png
