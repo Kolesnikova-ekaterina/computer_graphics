@@ -11,23 +11,26 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using System.Numerics;
 
 namespace lab6_a
 {
     public partial class Form1 : Form
     {
-        static List<PointD> list_points;
+        public static List<PointD> list_points;
         List<Line> list_lines;
         List<Polygon> list_pols;
         List<Polyhedra> polyhedra;
         List<PointD> line_axis;
         List<PointD> line_polyline;
+        List<Color> textureColor = new List<Color>();
         bool is_draw = false;
         bool draw_axis = false;
         bool draw_polyline = false;
         int numb_vert = 0;
         Graphics g;
         Camera camera;
+        Projection projection = Projection.Axonometric;
         public Form1()
         {
             InitializeComponent();
@@ -39,7 +42,7 @@ namespace lab6_a
             line_polyline = new List<PointD>();
             g = Graphics.FromHwnd(pictureBox1.Handle);
             //Cube();
-            
+
             camera = new Camera();
 
         }
@@ -62,9 +65,9 @@ namespace lab6_a
                 y *= -1;
                 z *= -1;
             }
-            public void Normalize ()
+            public void Normalize()
             {
-                var sum = (x + y + z) ;
+                var sum = (x + y + z);
                 if (Math.Abs(sum) < double.Epsilon)
                     return;
                 x /= sum;
@@ -154,7 +157,7 @@ namespace lab6_a
             }
         }
 
-       
+
 
         public class Zbuf
         {
@@ -186,13 +189,14 @@ namespace lab6_a
 
         double[,] matrixResult = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
-        double[,] matrixAxonometric = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+        double[,] matrixAxonometric = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
-        
+
 
         double[,] matrixMirror = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
-        double[,] matrixView = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        double[,] matrixObjectToWorldCoordinates = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
 
         public static double[,] multipleMatrix(double[,] a, double[,] b)
         {
@@ -296,7 +300,7 @@ namespace lab6_a
 
 
 
-             
+
 
             for (int i = 0; i < list_points.Count(); i++)
             {
@@ -424,7 +428,7 @@ namespace lab6_a
 
             list_pols.Clear();
 
-             
+
             for (int i = 0; i < list_lines.Count(); i += 3)
             {
                 list_pols.Add(new Polygon(new List<Line>() { list_lines[i], list_lines[i + 1], list_lines[i + 2] }));
@@ -638,8 +642,7 @@ namespace lab6_a
 
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             pictureBox1.Refresh();
-
-            switch (comboBoxTypeProection.SelectedIndex)
+            switch (projection)
             {
                 /*
                 XY
@@ -650,9 +653,8 @@ namespace lab6_a
                  
                  */
 
-                case 0:
+                case Projection.XY:
                     {
-                        pictureBox1.Refresh();
                         for (int i = 0; i < list_lines.Count(); i++)
                         {
                             Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].y));
@@ -664,9 +666,8 @@ namespace lab6_a
 
                         break;
                     }
-                case 1:
+                case Projection.XZ:
                     {
-                        pictureBox1.Refresh();
                         for (int i = 0; i < list_lines.Count(); i++)
                         {
                             Point a = new Point((int)(list_points[list_lines[i].a].x), (int)(list_points[list_lines[i].a].z));
@@ -678,9 +679,8 @@ namespace lab6_a
 
                         break;
                     }
-                case 2:
+                case Projection.YZ:
                     {
-                        pictureBox1.Refresh();
                         for (int i = 0; i < list_lines.Count(); i++)
                         {
                             Point a = new Point((int)(list_points[list_lines[i].a].y), (int)(list_points[list_lines[i].a].z));
@@ -692,16 +692,14 @@ namespace lab6_a
 
                         break;
                     }
-                case 3:
+                case Projection.Axonometric:
                     {
-                        pictureBox1.Refresh();
-                        axonometric();
+                        camera.DrawAxonometric(g, list_points, list_lines, matrixObjectToWorldCoordinates, new Vector(pictureBox1.Width, pictureBox1.Height, 1));
                         break;
                     }
-                case 4:
+                case Projection.Perspective:
                     {
-                        pictureBox1.Refresh();
-                        camera.Perspective(g, list_points, list_lines, new Vector(pictureBox1.Width, pictureBox1.Height, 1));
+                        camera.DrawPerspective(g, list_points, list_lines, matrixObjectToWorldCoordinates, new Vector(pictureBox1.Width, pictureBox1.Height, 1));
                         break;
                     }
             }
@@ -710,7 +708,7 @@ namespace lab6_a
 
 
         }
-    
+
         private void axonometric()
         {
             double anglephi = -45.0 * Math.PI / 180.0;
@@ -730,7 +728,7 @@ namespace lab6_a
 
                 newimage.Add(new PointD(res[0, 0], res[0, 1], res[0, 2]));
             }
-             
+
             for (int i = 0; i < list_lines.Count(); i++)
             {
                 if (!list_lines[i].isvisible)
@@ -744,7 +742,7 @@ namespace lab6_a
         }
         private void buttonTranslite_Click(object sender, EventArgs e)
         {
-             
+
             //                                                                                                   x  y  z
             //double[,] matrixTranslation = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 1, 1, 1, 1 } };
             matrixTranslation[3, 0] = Convert.ToDouble(textBox1.Text);
@@ -773,7 +771,7 @@ namespace lab6_a
                 deleteinvisible_Click(sender, e);
                 //return ;
             }
-            if (zb) 
+            if (zb)
                 applyZbuffer();
             else
                 peremalui();
@@ -784,13 +782,30 @@ namespace lab6_a
             zb = false;
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             pictureBox1.Refresh();
+            switch (comboBoxTypeProection.SelectedIndex)
+            {
+                case 0:
+                    projection = Projection.XY; break;
+                case 1:
+                    projection = Projection.XZ; break;
+                case 2:
+                    projection = Projection.YZ; break;
+                case 3:
+                    projection = Projection.Axonometric; break;
+                case 4:
+                    projection = Projection.Perspective; break;
+                default:
+                    projection = Projection.Axonometric;
+                    break;
+            }
             peremalui();
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             /* z  y  x*/
-            switch (comboBoxAxis.SelectedIndex) {
+            switch (comboBoxAxis.SelectedIndex)
+            {
                 case 0:
                     matrixMirror[0, 0] = 1;
                     matrixMirror[1, 1] = 1;
@@ -915,33 +930,26 @@ namespace lab6_a
             }
 
 
-            for (int i = 0; i < list_points.Count; i++)
-            {
-                double[,] matrixPoint = new double[1, 4] { { list_points[i].x, list_points[i].y, list_points[i].z, 1.0 } };
-
-                var res = (multipleMatrix(matrixPoint, currentRotate));
-
-                list_points[i] = new PointD(res[0, 0], res[0, 1], res[0, 2]);
-            }
-            if (invisible)
-            {
-                polyhedra[0].findcenter();
-                //polyhedra[0].
-                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
-                {
-                    polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
-                }
-                //System.Threading.Thread.Sleep(100);
-                returnvisible();
-                deleteinvisible_Click(sender, e);
-                //return ;
-            }
+            matrixObjectToWorldCoordinates = matrixObjectToWorldCoordinates.Mult(currentRotate);
+            //if (invisible)
+            //{
+            //    polyhedra[0].findcenter();
+            //    //polyhedra[0].
+            //    for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+            //    {
+            //        polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
+            //    }
+            //    //System.Threading.Thread.Sleep(100);
+            //    returnvisible();
+            //    deleteinvisible_Click(sender, e);
+            //    //return ;
+            //}
 
 
-            if (zb)
-                applyZbuffer();
-            else
-                peremalui();
+            //if (zb)
+            //    applyZbuffer();
+            //else
+            peremalui();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -988,7 +996,8 @@ namespace lab6_a
             {
                 polyhedra[0].findcenter();
                 //polyhedra[0].
-                for (int i = 0; i < polyhedra[0].polygons.Count; i++){
+                for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+                {
                     polyhedra[0].polygons[i].findnormal(polyhedra[0].center);
                 }
                 //System.Threading.Thread.Sleep(100);
@@ -1036,7 +1045,8 @@ namespace lab6_a
             Regex rf = new Regex(@"\s[0-9]+(\/[0-9]*)?(\/[0-9]+)?");
             for (int i = 0; i < lines.Length; i++)
             {
-                if (rv.IsMatch(lines[i])) {
+                if (rv.IsMatch(lines[i]))
+                {
                     var m = rv.Match(lines[i]);
 
                     double x = 10 * Convert.ToDouble(m.Groups["first"].ToString().Replace('.', ','));
@@ -1105,7 +1115,7 @@ namespace lab6_a
         {
             if (is_draw)
             {
-                 
+
 
                 if (draw_axis)
                 {
@@ -1466,40 +1476,42 @@ namespace lab6_a
         private bool invisible = false;
         private void deleteinvisible_Click(object sender, EventArgs e)
         {
-            invisible = true ;
-            // returnvisible();
-            PointD centr = centerScene();
+            g.Clear(Color.White);
+            camera.DrawWithoutNonVisible(g, polyhedra[0], matrixObjectToWorldCoordinates, new Vector(pictureBox1.Width, pictureBox1.Height, 1));
 
-            if (!vievstand)
-            {
-                vievstand = true;
-                viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
-            }
-            //viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
-            //Vector viev = new Vector(camera.position.x - centr.x, camera.position.y - centr.y, camera.position.z - centr.z);
-            //Vector viev = camera.view;
-            //viev.reverse();
-            //if (comboBoxTypeProection.SelectedIndex == 3)
-            //    viev = new Vector(-1, -1.05, 1);
-            int i = 0;
-            foreach (var p in list_pols)
-            {
-                double c = (p.normal.x * viev.x + p.normal.y * viev.y + p.normal.z * viev.z);
-                c /= Math.Sqrt(Math.Pow(p.normal.x, 2) + Math.Pow(p.normal.y, 2) + Math.Pow(p.normal.z, 2)) * Math.Sqrt(Math.Pow(viev.x, 2) + Math.Pow(viev.y, 2) + Math.Pow(viev.z, 2));
+            //invisible = true;
+            //// returnvisible();
+            //PointD centr = polyhedra[0].center;
+            //var tmp = new double[1, 4] { { centr.x, centr.y, centr.z, 1.0 } }.Mult(matrixObjectToWorldCoordinates).Mult(camera.matrixToCamera);
 
-                double arc = Math.Acos(c);
-                if (arc * 180 / Math.PI > 90)
-                {
-                    //list_pols[i].isvisible = false;
-                    for (int j = 0; j < list_pols[i].lines.Count; j++)
-                    {
-                        list_lines[list_pols[i].lines.Count * i + j].isvisible = false;
-                    }
-                }
-                i++;
-            }
+            ////if (!vievstand)
+            ////{
+            ////    vievstand = true;
+            ////    viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
+            ////}
 
-            peremalui();
+            //viev = new Vector(camera.position.x - tmp[0,0], camera.position.y - tmp[0, 1], camera.position.z - tmp[0, 2]);
+
+            //int i = 0;
+            //foreach (var p in polyhedra[0].polygons)
+            //{
+            //    var tmp2 = new double[1, 4] { { p.normal.x, p.normal.y, p.normal.z, 1.0 } }.Mult(matrixObjectToWorldCoordinates);
+            //    double c = (tmp2[0,0] * viev.x + tmp2[0, 1] * viev.y + tmp2[0, 2] * viev.z);
+            //    c /= Math.Sqrt(Math.Pow(tmp2[0, 0], 2) + Math.Pow(tmp2[0, 1], 2) + Math.Pow(tmp2[0, 2], 2)) * Math.Sqrt(Math.Pow(viev.x, 2) + Math.Pow(viev.y, 2) + Math.Pow(viev.z, 2));
+
+            //    double arc = Math.Acos(c);
+            //    if (arc * 180 / Math.PI > 90)
+            //    {
+            //        //list_pols[i].isvisible = false;
+            //        for (int j = 0; j < list_pols[i].lines.Count; j++)
+            //        {
+            //            list_lines[list_pols[i].lines.Count * i + j].isvisible = false;
+            //        }
+            //    }
+            //    i++;
+            //}
+
+            //peremalui();
         }
 
         public void returnvisible()
@@ -1521,7 +1533,8 @@ namespace lab6_a
         {
             double teta = 5;
             PointD centr = centerScene();
-            if (!vievstand) {
+            if (!vievstand)
+            {
                 vievstand = true;
                 viev = new Vector(Convert.ToDouble(textBoxx.Text) - centr.x, Convert.ToDouble(textBoxy.Text) - centr.y, Convert.ToDouble(textBoxz.Text) - centr.z);
             }
@@ -1530,7 +1543,8 @@ namespace lab6_a
             currentRotate[0, 2] = -Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 0] = Math.Sin(teta * Math.PI / 180.0);
             currentRotate[2, 2] = Math.Cos(teta * Math.PI / 180.0);
-            for (int it = 0; it < 360; it += (int)teta) {
+            for (int it = 0; it < 360; it += (int)teta)
+            {
                 /*
                 for (int i = 0; i < list_points.Count; i++)
                 {
@@ -1542,7 +1556,7 @@ namespace lab6_a
                 }
 
                 polyhedra[0].findcenter();*/
-                double[,] matrixPoint = new double[1, 4] { { viev.x, viev.y, viev.z, 1.0 } }; 
+                double[,] matrixPoint = new double[1, 4] { { viev.x, viev.y, viev.z, 1.0 } };
                 var res = (multipleMatrix(matrixPoint, currentRotate));
 
                 viev = new Vector(res[0, 0], res[0, 1], res[0, 2]);
@@ -1573,7 +1587,7 @@ namespace lab6_a
 
 
 
-       
+
         private List<Color> get_colors(int pol)
         {
             List<Color> colors = new List<Color>();
@@ -1597,10 +1611,10 @@ namespace lab6_a
             List<int> res = new List<int>();
             if (x0 == x1)
                 res.Add(y1);
-            
+
             double a = (y1 - y0) * 1.0f / (x1 - x0); //с таким шагом будем получать новые точки
             double y = y0;
-            
+
             for (int i = x0; i <= x1; i++)
             {
                 res.Add((int)y);
@@ -1613,7 +1627,7 @@ namespace lab6_a
         public static List<PointD> interpolateTriangle(List<PointD> points)
         {
             List<PointD> res = new List<PointD>();
-            
+
             points.Sort((p1, p2) => p1.y.CompareTo(p2.y));
 
             var wpoints = points.Select((p) => (x: (int)p.x, y: (int)p.y, z: (int)p.z)).ToList();
@@ -1636,8 +1650,8 @@ namespace lab6_a
 
             //определяем какой массив правый, а какой левый
             int middle = xy.Count() / 2;
-            List<int> x_left, x_right, z_left, z_right; 
-            
+            List<int> x_left, x_right, z_left, z_right;
+
             if (x02[middle] < xy[middle])
             {
                 x_left = x02;
@@ -1673,7 +1687,7 @@ namespace lab6_a
             return res;
         }
 
-        public static List<List<PointD>> triangulation(List<PointD> points) 
+        public static List<List<PointD>> triangulation(List<PointD> points)
         {
             List<List<PointD>> res = new List<List<PointD>>();
 
@@ -1689,7 +1703,8 @@ namespace lab6_a
         public List<List<PointD>> RasterFigure()
         {
             List<List<PointD>> res = new List<List<PointD>>();
-            foreach (var polyg in polyhedra) { 
+            foreach (var polyg in polyhedra)
+            {
                 foreach (var polygon in polyg.polygons)//каждая грань-это многоугольник, который надо растеризовать
                 {
                     List<PointD> currentface = new List<PointD>();
@@ -1712,7 +1727,7 @@ namespace lab6_a
             return res;
         }
 
-       public PointD getpointinperspective(PointD p)
+        public PointD getpointinperspective(PointD p)
         {
 
             double anglephi = -45.0 * Math.PI / 180.0;
@@ -1724,8 +1739,8 @@ namespace lab6_a
             matrixAxonometric[2, 1] = -Math.Cos(anglepsi) * Math.Sin(anglephi);
 
             double[,] matrixPoint = new double[1, 4] { { p.x, p.y, p.z, 1.0 } };
-            double[,] res = new double[0,3];
-           // Camera camera = new Camera(new PointD(0, 0, 0), new Vector(0, 0, 1));
+            double[,] res = new double[0, 3];
+            // Camera camera = new Camera(new PointD(0, 0, 0), new Vector(0, 0, 1));
 
             if (comboBoxTypeProection.SelectedIndex == 3)
                 res = multipleMatrix(matrixPoint, matrixAxonometric);
@@ -1759,10 +1774,10 @@ namespace lab6_a
             var polys = RasterFigure();
 
             var depth = new double[pictureBox1.Width][];
-            for (int i = 0; i<depth.Count(); i++)
+            for (int i = 0; i < depth.Count(); i++)
             {
                 depth[i] = new double[pictureBox1.Height];
-                for(int j =0; j< depth[i].Count(); j++)
+                for (int j = 0; j < depth[i].Count(); j++)
                 {
                     depth[i][j] = double.MaxValue;
                 }
@@ -1776,20 +1791,20 @@ namespace lab6_a
      fill pixel in raster 
              */
 
-             
-           // g.DrawLine()
+
+            // g.DrawLine()
             for (int i = 0; i < polys.Count(); i++)
             {
                 if (!polyhedra[0].polygons[i].isvisible())
                     continue;
                 GraphicsPath gp = new GraphicsPath();
-                for (int j =0; j< polys[i].Count; j++)
+                for (int j = 0; j < polys[i].Count; j++)
                 {
                     PointD pointinviev = getpointinperspective(polys[i][j]);
-                    if (pointinviev.x < 0 || pointinviev.x >= pictureBox1.Width-1)
+                    if (pointinviev.x < 0 || pointinviev.x >= pictureBox1.Width - 1)
                         continue;
 
-                    if (pointinviev.y < 0 || pointinviev.y >= pictureBox1.Height-1)
+                    if (pointinviev.y < 0 || pointinviev.y >= pictureBox1.Height - 1)
                         continue;
 
                     // if (cam.dist(polys[i][j]) < depth[(int)Math.Round(pointinviev.x)][(int)Math.Round(pointinviev.y)])
@@ -1803,9 +1818,9 @@ namespace lab6_a
                         img.SetPixel((int)Math.Round(pointinviev.x), (int)Math.Round(pointinviev.y), list_colors[i]);
                     }
                 }
-              //g.DrawPath(new Pen(list_colors[i]),gp);
+                //g.DrawPath(new Pen(list_colors[i]),gp);
             }
-           pictureBox1.Image = img;
+            pictureBox1.Image = img;
 
         }
 
@@ -1829,8 +1844,8 @@ namespace lab6_a
 
         private void Down(object sender, EventArgs e)
         {
-          camera.RotateDown();
-          peremalui();
+            camera.RotateDown();
+            peremalui();
         }
 
         private void buttonCamera_Click(object sender, EventArgs e)
@@ -1840,6 +1855,7 @@ namespace lab6_a
 
         private void button5_Click(object sender, EventArgs e)
         {
+            matrixObjectToWorldCoordinates = Helper.IdentityMatrix();
             camera.RefreshPos();
             peremalui();
         }
@@ -1860,5 +1876,98 @@ namespace lab6_a
 
             vievstand = false;
         }
+
+        private void textBox11_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        private void LightFunction()
+        {
+
+            var vertexColors = new List<Color>();
+
+            for (int i = 0; i < list_lines.Count; i++)
+            {
+                vertexColors[i] = textureColor[list_lines[i].a];
+            }
+
+
+            // Рисуем треугольники с учетом освещения
+            for (int i = 0; i < polyhedra[0].polygons.Count; i++)
+            {
+                Vector3 v1 = list_points[ polyhedra[0].polygons[i].lines[0].a].ToVector3();
+                Vector3 v2 = list_points[polyhedra[0].polygons[i].lines[0].a].ToVector3();
+                Vector3 v3 = list_points[polyhedra[0].polygons[i].lines[0].a].ToVector3();
+
+                Color c1 = vertexColors[polyhedra[0].polygons[i].lines[0].a];
+                Color c2 = vertexColors[polyhedra[0].polygons[i].lines[1].a];
+                Color c3 = vertexColors[polyhedra[0].polygons[i].lines[2].a];
+
+                DrawGouraudTriangle(g, v1, v2, v3, c1, c2, c3);
+            }
+        }
+
+        private void DrawGouraudTriangle(Graphics g, Vector3 v1, Vector3 v2, Vector3 v3, Color c1, Color c2, Color c3)
+        {
+            // Рисуем треугольник с гуро-освещением
+            using (Brush brush = new SolidBrush(Color.FromArgb((c1.R + c2.R + c3.R) / 3, (c1.G + c2.G + c3.G) / 3, (c1.B + c2.B + c3.B) / 3)))
+            {
+                PointF[] points = new PointF[] { new PointF(v1.X, v1.Y), new PointF(v2.X, v2.Y), new PointF(v3.X, v3.Y) };
+                g.FillPolygon(brush, points);
+            }
+        }
+
+        private void light_Click(object sender, EventArgs e)
+        {
+            LightFunction();
+        }
+
+        private void texture_Click(object sender, EventArgs e)
+        {
+            var vertexColors = new List<Color>();
+
+            for (int i = 0; i < list_lines.Count; i++)
+            {
+                vertexColors[i] = textureColor[list_lines[i].a];
+            }
+
+            peremalui();
+        }
+
+        private void horizont_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == -1)
+                return;
+            list_points.Clear();
+            list_lines.Clear();
+            list_pols.Clear();
+
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    drawfunction(multsincos);
+                    break;
+                case 1:
+                    drawfunction(sqrtsqrxy);
+                    break;
+                case 2:
+                    drawfunction(sinaqr);
+                    break;
+                case 3:
+                    drawfunction(cosxminusy);
+                    break;
+                case 4:
+                    drawfunction(sinsqrdividesqrt);
+                    break;
+                default:
+                    break;
+            }
+
+            peremalui();
+        }
     }
+
+    enum Projection { XY, XZ, YZ, Axonometric, Perspective }
 }
